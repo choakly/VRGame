@@ -3309,7 +3309,7 @@ MonoBehaviour:
   m_EnableUIInteraction: 1
   m_BlockUIOnInteractableSelection: 1
   m_AllowAnchorControl: 0
-  m_UseForceGrab: 0
+  m_UseForceGrab: 1
   m_RotateSpeed: 180
   m_TranslateSpeed: 1
   m_AnchorRotateReferenceFrame: {fileID: 0}
@@ -3835,6 +3835,9 @@ MonoBehaviour:
   bullet: {fileID: 5837187141559869030, guid: bfd7240b9a7ab7f499d15306e6e249c9, type: 3}
   spawnPoint: {fileID: 521946570}
   fireSpeed: 20
+  ammo: 8
+  maxAmmo: 8
+  reloadButton: {fileID: -4026555446208874560, guid: c348712bda248c246b8c49b3db54643f, type: 3}
 --- !u!54 &1407093907
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -3926,10 +3929,34 @@ MonoBehaviour:
       m_Calls: []
   m_HoverEntered:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1410275026}
+        m_TargetAssemblyTypeName: UnityEngine.Renderer, UnityEngine
+        m_MethodName: set_sharedMaterial
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 2100000, guid: 1b372aba9610470429f545231a3e81f4, type: 2}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Material, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_HoverExited:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1410275026}
+        m_TargetAssemblyTypeName: UnityEngine.Renderer, UnityEngine
+        m_MethodName: set_sharedMaterial
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 2100000, guid: 8e11faa7127df344d861d25c9f0a53aa, type: 2}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Material, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_FirstSelectEntered:
     m_PersistentCalls:
       m_Calls: []
@@ -4118,6 +4145,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2300002, guid: c1232b0a1b78ddf44bd877453fb7a84c, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 44715f900fc388a4b9b5a3f87863b0c8, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
@@ -4144,6 +4175,11 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 1407093910}
   m_SourcePrefab: {fileID: 100100000, guid: c1232b0a1b78ddf44bd877453fb7a84c, type: 3}
+--- !u!23 &1410275026 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 2300000, guid: c1232b0a1b78ddf44bd877453fb7a84c, type: 3}
+  m_PrefabInstance: {fileID: 1409942401}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1494426176
 GameObject:
   m_ObjectHideFlags: 0
