@@ -6,7 +6,7 @@ public class BulletCollision : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("trigger");
+        Debug.Log("bullet trigger");
         Destroy(other.gameObject);
         spawner.GetComponent<EnemySpawner>().EnemyKilled();
         Destroy(this.gameObject);
