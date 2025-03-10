@@ -2,13 +2,12 @@ using UnityEngine;
 
 public class BulletCollision : MonoBehaviour
 {
-    [SerializeField] private GameObject spawner;
-
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("bullet trigger");
-        Destroy(other.gameObject);
-        spawner.GetComponent<EnemySpawner>().EnemyKilled();
-        Destroy(this.gameObject);
+        if (other.tag == "Enemy")
+        {
+            Debug.Log("bullet collision detected");
+            Destroy(other.gameObject);  //should destroy enemy
+        }
     }
 }
