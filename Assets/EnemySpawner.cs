@@ -4,7 +4,8 @@ using UnityEngine;
 public class EnemySpawner : MonoBehaviour
 {
     [Header("This object needs 'Spawner' tag")]
-    public float maxRadius = 10;
+    public float maxRadius = 20;
+    public float minRadius = 10;
     public int maxSpawns = 10;
     public int aliveEnemies = 0;
     public int killCount = 0;
@@ -18,7 +19,6 @@ public class EnemySpawner : MonoBehaviour
     //[Header("Initial Spawn Variables")]
     //[SerializeField] private float maxHeight = 1;
     //private Renderer rend;
-    //private float minRadius = 5;
 
     void Start()
     {
@@ -50,6 +50,24 @@ public class EnemySpawner : MonoBehaviour
         //Set the y to height of enemy
         randomPos.y = 1;
 
+        float dist = Vector3.Distance(randomPos, transform.position);
+        Debug.Log("enemy distance to 0,0,0: " + dist);
+
+
+        if (dist <= minRadius) Debug.Log("dist is less than minRadius");
+        while (dist <= minRadius)
+        {
+            //Generate random position
+            randomPos = Random.insideUnitSphere * maxRadius;
+
+            //Height Adjustments
+            randomPos.y = 1;
+
+            dist = Vector3.Distance(randomPos, transform.position);
+
+            if (dist > minRadius) Debug.Log("while: dist is good: " + dist);
+        }
+
         Instantiate(enemy, randomPos, Quaternion.identity);
 
         aliveEnemies += 1;
@@ -58,6 +76,10 @@ public class EnemySpawner : MonoBehaviour
 
     private void OnDrawGizmos()
     {
+        //blue represents the min range at which enemies spawn
+        Gizmos.color = Color.blue;
+        Gizmos.DrawWireSphere(this.transform.position, minRadius);
+
         //To display the radius the enemy/target would spawn in
 
         //Green represents the range at which enemies spawn
