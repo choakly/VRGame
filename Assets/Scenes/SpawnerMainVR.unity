@@ -6565,7 +6565,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b26841a442ca44141a03d6bae6e3aef2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxRadius: 10
+  maxRadius: 20
+  minRadius: 10
   maxSpawns: 10
   aliveEnemies: 0
   killCount: 0

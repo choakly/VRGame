@@ -9,6 +9,6 @@ public class BulletCollision : MonoBehaviour
             Debug.Log("bullet collision detected");
             Destroy(other.gameObject);  //should destroy enemy
         }
-        else Destroy(this.gameObject);
+        //else Destroy(this.gameObject);
     }
 }
