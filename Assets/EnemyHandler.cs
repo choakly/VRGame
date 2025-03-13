@@ -7,22 +7,36 @@ public class EnemyHandler : MonoBehaviour
     public EnemySpawner script;
     public float timeUntilDeath = 120;
     public float countdown = 0;
+    public float maxHealth = 100;
+    public float health;
+    public float distToOther;
 
     void Start()
     {
+        health = maxHealth;
+
+        //Get spawner reference
         spawner = GameObject.FindGameObjectWithTag("Spawner");
         if (spawner != null) script = spawner.GetComponent<EnemySpawner>();
         else Debug.Log("no spawner found");
-
-        float dist = Vector3.Distance(transform.position, spawner.transform.position);
-        Debug.Log("distance between enemy and spawner: " + dist);
     }
 
     void Update()
     {
         //Debug.Log("countdown" + countdown);
-        if (countdown >= timeUntilDeath) Destroy(this.gameObject);
-        else countdown += 1 * Time.deltaTime;
+        //if (countdown >= timeUntilDeath) Destroy(this.gameObject);
+        //else countdown += 1 * Time.deltaTime;
+
+        if(health <= 0)
+        {
+            Destroy(gameObject);
+        }
+    }
+
+    public void DealDamage(float dmg)
+    {
+        Debug.Log("Dealt damage to enemy health.");
+        health = health - dmg;
     }
 
     private void OnDestroy()

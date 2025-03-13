@@ -2,13 +2,22 @@ using UnityEngine;
 
 public class BulletCollision : MonoBehaviour
 {
+    public float dmg = 100;
+    public EnemyHandler enemyHandlerRef;
     private void OnTriggerEnter(Collider other)
     {
-        if(other.CompareTag("Enemy"))
+        Debug.Log("bullet collision detected");
+
+        if (other.CompareTag("Enemy"))
         {
-            Debug.Log("bullet collision detected");
-            Destroy(other.gameObject);  //should destroy enemy
+            Debug.Log("enemy hit by bullet");
+
+            //Deal damage to collider (enemy)
+            enemyHandlerRef = other.gameObject.GetComponent<EnemyHandler>();
+            enemyHandlerRef.DealDamage(dmg);
+
+            //Destroy(other.gameObject);  //should destroy enemy
         }
-        //else Destroy(this.gameObject);
+        //else Destroy(gameObject);
     }
 }
