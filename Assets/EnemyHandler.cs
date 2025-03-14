@@ -5,8 +5,8 @@ public class EnemyHandler : MonoBehaviour
     [Header("This object needs 'Enemy' tag")]
     public GameObject spawner;
     public EnemySpawner script;
-    public float timeUntilDeath = 120;
-    public float countdown = 0;
+    //public float timeUntilDeath = 120;
+    //public float countdown = 0;
     public float maxHealth = 100;
     public float health;
     public float distToOther;
@@ -44,5 +44,5 @@ public class EnemyHandler : MonoBehaviour
         Debug.Log("Enemy OnDestroy");
         script.EnemyKilled();
         //spawner.GetComponent<EnemySpawner>().DecayEnemyAlive();
-    }
-}
+    }//END OnDestroy
+}//END EnemyHandler

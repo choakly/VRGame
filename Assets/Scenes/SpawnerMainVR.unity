@@ -6565,17 +6565,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b26841a442ca44141a03d6bae6e3aef2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxSpawns: 10
-  aliveEnemies: 0
-  killCount: 0
   enemy: {fileID: 5800811084249616717, guid: 83fd963c760825e4395bfe36b4adf4e3, type: 3}
-  totalEnemies: []
+  maxSpawns: 10
+  spawnTime: 5
+  timeReducePerSet: 0.1
+  minDistForEnemies: 2
   maxRadius: 20
   minRadius: 10
-  spawnTime: 5
+  aliveEnemies: 0
+  killCount: 0
+  totalEnemies: []
   spawnRem: 0
-  timeReducePerSet: 0.1
-  minDistToE: 2
+  canSpawn: 1
 --- !u!1 &2095689277
 GameObject:
   m_ObjectHideFlags: 0

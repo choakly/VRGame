@@ -3,23 +3,23 @@ using UnityEngine;
 public class EnemySpawner : MonoBehaviour
 {
     [Header("This object needs 'Spawner' tag")]
-    public int maxSpawns = 10;
-    public int aliveEnemies = 0;
-    public int killCount = 0;
+    [Header("Initial Enemy Spawn Variables")]
     public GameObject enemy;
-    public GameObject[] totalEnemies;
-    //public Vector3 enemyPos;
+    public int maxSpawns = 10;
+    public float spawnTime = 5;
+    public float timeReducePerSet = 0.1f;
+    public float minDistForEnemies = 2;
 
     [Header("Min = player area (blue sphere)" +  "\n" + "Max = furthest out enemies can be (green)")]
     public float maxRadius = 20;
     public float minRadius = 10;
 
-    [Header("Initial Enemy Spawn Variables")]
-    public float spawnTime = 5;
+    [Header("Do not adjust.")]
+    public int aliveEnemies = 0;
+    public int killCount = 0;
+    public GameObject[] totalEnemies;
     public float spawnRem = 0;
-    public float timeReducePerSet = 0.1f;
-    public float minDistToE = 2;
-    //public float distToE;
+    public bool canSpawn = true;
 
     //[SerializeField] private float maxHeight = 1;
 
@@ -42,44 +42,6 @@ public class EnemySpawner : MonoBehaviour
         }
     }
 
-    #region Trying to get closest enemy
-
-    /*Transform GetClosestEnemy(Transform[] enemies)
-    {
-        Transform tMin = null;
-        float minDist = Mathf.Infinity;
-        Vector3 currentPos = transform.position;
-        foreach (Transform t in enemies)
-        {
-            float dist = Vector3.Distance(t.position, currentPos);
-            if (dist < minDist)
-            {
-                tMin = t;
-                minDist = dist;
-            }
-        }
-        return tMin;
-    }*/
-
-    public Vector3 ClosestEnemy(Vector3 randomPos)
-    {
-        Vector3 closest = new Vector3(0,0,0);
-        float minDist = Mathf.Infinity;
-
-        for(int i = 0; i < totalEnemies.Length; i++)
-        {
-            float tempDist = Vector3.Distance(randomPos, totalEnemies[i].transform.position);
-            if(tempDist < minDist)
-            {
-                tempDist = minDist;
-            }
-        }
-
-        return closest;
-    }
-
-    #endregion
-
     public void SpawnInRadius()
     {
         //Generate random position
@@ -88,30 +50,72 @@ public class EnemySpawner : MonoBehaviour
         //Set the y to height of enemy
         randomPos.y = 1;
 
-        #region Check distance compared to player area
+        //#region Check distance compared to player area
 
         float dist = Vector3.Distance(randomPos, transform.position);
+        if(dist <= minRadius) canSpawn = false;
 
-        //distToE = GetClosestEnemy(randomPos);
-        //Debug.Log("dist to e: " + distToE);
+        float distToE = minDistForEnemies + 1;
+        if (totalEnemies.Length > 0)
+        {
+            for(int i = 0; i < totalEnemies.Length; i++)
+            {
+                Vector3 closestVector = totalEnemies[i].transform.position;
+                distToE = Vector3.Distance(randomPos, closestVector);
 
-        if (dist <= minRadius) Debug.Log("dist is less than minRadius");
-        //if (distToE <= minDistToE) Debug.Log("Enemy too close");
+                if(distToE <= minDistForEnemies)
+                {
+                    Debug.Log("Enemy too close");
+                    Debug.Log("dist to e: " + distToE);
+                    canSpawn = false;
+                    break;
+                }
+            }
+        }
 
-        while(dist <= minRadius)// && (distToE <= minDistToE))
+        //Debug.Log("Dist: " + dist);
+
+        while(!canSpawn)
         {
             //Generate random position
             randomPos = Random.insideUnitSphere * maxRadius;
+            Debug.Log("New spawn position");
 
             //Height Adjustments
             randomPos.y = 1;
 
             dist = Vector3.Distance(randomPos, transform.position);
 
-            //if (dist > minRadius) Debug.Log("while: dist is good: " + dist);
-        }
+            if(totalEnemies.Length > 0)
+            {
+                for(int i = 0; i < totalEnemies.Length; i++)
+                {
+                    Vector3 closestVector = totalEnemies[i].transform.position;
+                    distToE = Vector3.Distance(randomPos, closestVector);
 
-        #endregion
+                    if (distToE <= minDistForEnemies)
+                    {
+                        Debug.Log("While. Enemy too close");
+                        Debug.Log("While. dist to e: " + distToE);
+                        break;
+                    }
+                }
+
+                if((dist > minRadius) && (distToE > minDistForEnemies))
+                {
+                    canSpawn = true;
+                    break;
+                }
+            }
+            else
+            {
+                if(dist > minRadius)
+                {
+                    canSpawn = true;
+                    break;
+                }
+            }
+        }//END While
 
         Instantiate(enemy, randomPos, Quaternion.identity);
 
