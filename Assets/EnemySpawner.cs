@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class EnemySpawner : MonoBehaviour
 {
@@ -20,12 +21,18 @@ public class EnemySpawner : MonoBehaviour
     public GameObject[] totalEnemies;
     public float spawnRem = 0;
     public bool canSpawn = true;
+    public GameObject justSpawned;
+    public GameObject cam;
+    public Transform playerTransform;
 
     //[SerializeField] private float maxHeight = 1;
 
     void Start()
     {
         aliveEnemies = 0;
+
+        cam = GameObject.FindGameObjectWithTag("MainCamera");
+        playerTransform = cam.transform;
     }
 
     private void Update()
@@ -33,8 +40,6 @@ public class EnemySpawner : MonoBehaviour
         //Get a list of all enemies(gameobject)
         totalEnemies = GameObject.FindGameObjectsWithTag("Enemy");
 
-        //Debug.Log("spawnRem: " + spawnRem);
-        //Debug.Log("update alive enemies: " + aliveEnemies);
         if ((aliveEnemies < maxSpawns) && (totalEnemies.Length < maxSpawns))
         {
             if (spawnRem >= spawnTime) SpawnInRadius();
@@ -50,7 +55,7 @@ public class EnemySpawner : MonoBehaviour
         //Set the y to height of enemy
         randomPos.y = 1;
 
-        //#region Check distance compared to player area
+        #region Check distance compared to player area and between enemies
 
         float dist = Vector3.Distance(randomPos, transform.position);
         if(dist <= minRadius) canSpawn = false;
@@ -72,8 +77,6 @@ public class EnemySpawner : MonoBehaviour
                 }
             }
         }
-
-        //Debug.Log("Dist: " + dist);
 
         while(!canSpawn)
         {
@@ -117,7 +120,10 @@ public class EnemySpawner : MonoBehaviour
             }
         }//END While
 
-        Instantiate(enemy, randomPos, Quaternion.identity);
+        #endregion
+
+        justSpawned = Instantiate(enemy, randomPos, Quaternion.identity);
+        SetStats(justSpawned);
 
         aliveEnemies += 1;
         spawnRem = 0;
@@ -149,5 +155,15 @@ public class EnemySpawner : MonoBehaviour
 
         //Every 10 kills reduce the spawn timer
         if((killCount % 10) == 0) spawnTime = spawnTime - timeReducePerSet;
+    }//END EnemuKilled
+
+    public void SetStats(GameObject enemy)
+    {
+        //Get enemy script
+        EnemyHandler enemyHandler = enemy.GetComponent<EnemyHandler>();
+        enemyHandler.target = playerTransform;
+
+        //Set stats (variables)
+        //damage, health, etc
     }
 }//END EnemySpawner
