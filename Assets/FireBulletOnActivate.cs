@@ -13,6 +13,9 @@ public class FireBulletOnActivate : MonoBehaviour
     protected bool thing = false;
     public float maxAmmo = 8;
     public InputActionReference reloadButton;
+    public bool hasClip = true;
+
+    public XRSocketInteractorTag socket;
     void Start()
     {
         XRGrabInteractable grabbable = GetComponent<XRGrabInteractable>();
@@ -20,7 +23,9 @@ public class FireBulletOnActivate : MonoBehaviour
         hoverable.hoverEntered.AddListener(HoverEnteredThing);
         hoverable.hoverExited.AddListener(HoverExitedThing);
         grabbable.activated.AddListener(FireBullet);
-        reloadButton.action.started += Reload;
+        socket.selectEntered.AddListener(ClipInserted);
+        socket.selectExited.AddListener(ClipRemoved);
+        //reloadButton.action.started += Reload;
 
     }
 
@@ -32,7 +37,7 @@ public class FireBulletOnActivate : MonoBehaviour
 
     public void FireBullet(ActivateEventArgs arg)
     {
-        if(ammo > 0)
+        if(ammo > 0 && hasClip)
         {
             GameObject spawnedBullet = Instantiate(bullet);
             spawnedBullet.transform.position = spawnPoint.position;
@@ -40,7 +45,24 @@ public class FireBulletOnActivate : MonoBehaviour
             Destroy(spawnedBullet, 5);
             ammo--;
         }
+        else if (!hasClip) {
+            Debug.Log("No clip");
+        }
+        else{
+            Debug.Log("Out of ammo");
+        }
     }
+    void ClipInserted(SelectEnterEventArgs args)
+    {
+        hasClip = true;
+        ammo = maxAmmo;
+    }
+
+    void ClipRemoved(SelectExitEventArgs args)
+    {
+        hasClip = false;
+    }
+        
         
     void HoverEnteredThing(HoverEnterEventArgs arg)
     {
@@ -50,13 +72,13 @@ public class FireBulletOnActivate : MonoBehaviour
     {
         thing = false;
     }
-    void Reload(InputAction.CallbackContext context)
+    /*void Reload(InputAction.CallbackContext context)
     {
         if(ammo < 8 && thing == true)
         {
             ammo = maxAmmo;
         }
     }
-    
+    */
     
 }
