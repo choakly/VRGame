@@ -705,7 +705,7 @@
                     "name": "Activate",
                     "type": "Button",
                     "id": "0c0991c5-d329-4afc-8892-1076b440477c",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -795,6 +795,15 @@
                     "name": "Reload",
                     "type": "Button",
                     "id": "4a3a452d-6fdd-44c5-8d0c-0eef8e4468fd",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "GrabAmmo",
+                    "type": "Button",
+                    "id": "34c5c617-ef46-448f-9261-779ed784ebc5",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -986,6 +995,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "Reload",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "e7e8fa0b-5e2d-4184-8515-73f030a05525",
+                    "path": "<XRController>{LeftHand}/gripPressed",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "GrabAmmo",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

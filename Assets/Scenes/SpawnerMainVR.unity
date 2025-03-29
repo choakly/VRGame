@@ -2471,6 +2471,77 @@ RectTransform:
   m_AnchoredPosition: {x: -5, y: 0}
   m_SizeDelta: {x: -20, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &996632768
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 996632770}
+  - component: {fileID: 996632769}
+  - component: {fileID: 996632771}
+  m_Layer: 0
+  m_Name: ClipSpawnSpot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!65 &996632769
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 996632768}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.84817314, y: 0.10732022, z: 0.43669915}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!4 &996632770
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 996632768}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1.468, y: 0.773, z: -0.972}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &996632771
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 996632768}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c20a072df3bb98488bb1183efd784de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pistolClip: {fileID: 425028826542390387}
+  spawnArea: {fileID: 996632770}
+  maxClips: 3
+  respawnDelay: 3
+  spawnOffset: {x: 0.1, y: 0, z: 0}
 --- !u!1 &1053315343
 GameObject:
   m_ObjectHideFlags: 0
@@ -2485,8 +2556,9 @@ GameObject:
   - component: {fileID: 1053315346}
   - component: {fileID: 1053315345}
   - component: {fileID: 1053315344}
+  - component: {fileID: 1053315350}
   m_Layer: 7
-  m_Name: SimpleInteractable
+  m_Name: AmmoBox
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2746,6 +2818,24 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1053315350
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1053315343}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a1ab32dd7f4c904d90a7a343e1cadff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pistolClip: {fileID: 425028826542390387}
+  spawnPosition: {fileID: 58749156}
+  spawnedClip: {fileID: 425028826542390387}
+  leftController: {fileID: 0}
+  grabButton: {fileID: 0}
+  grabInteractable: {fileID: 427218086710419542}
 --- !u!1 &1113242102
 GameObject:
   m_ObjectHideFlags: 0
@@ -3692,7 +3782,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 4294967295
   m_InteractionLayers:
-    m_Bits: 4294967295
+    m_Bits: 6
   m_AttachTransform: {fileID: 1142241186}
   m_KeepSelectedTargetValid: 1
   m_DisableVisualsWhenBlockedInGroup: 1
@@ -4025,7 +4115,10 @@ MonoBehaviour:
   maxAmmo: 8
   reloadButton: {fileID: -4026555446208874560, guid: c348712bda248c246b8c49b3db54643f, type: 3}
   hasClip: 1
+  clipGrabbable: {fileID: 427218086710419542}
   socket: {fileID: 1272861211}
+  directInteractor: {fileID: 0}
+  rayInteractor: {fileID: 1494426181}
 --- !u!54 &1407093907
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -4097,7 +4190,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 4294967295
   m_InteractionLayers:
-    m_Bits: 4
+    m_Bits: 2
   m_DistanceCalculationMode: 1
   m_SelectMode: 0
   m_FocusMode: 1
@@ -4385,6 +4478,7 @@ GameObject:
   - component: {fileID: 1494426180}
   - component: {fileID: 1494426179}
   - component: {fileID: 1494426178}
+  - component: {fileID: 1494426183}
   m_Layer: 0
   m_Name: Left Grab Ray
   m_TagString: Left Hand
@@ -5030,6 +5124,21 @@ MonoBehaviour:
       m_Flags: 0
     m_Reference: {fileID: -1636515391019944688, guid: c348712bda248c246b8c49b3db54643f, type: 3}
   m_ButtonPressPoint: 0.5
+--- !u!114 &1494426183
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1494426176}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 081dd0f7c34219a49b8986377c4f0db9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  leftrayInteractor: {fileID: 1494426181}
+  rightrayInteractor: {fileID: 1189217454}
+  minRayDistance: 1.2
 --- !u!1 &1591329560
 GameObject:
   m_ObjectHideFlags: 0
@@ -7228,6 +7337,7 @@ GameObject:
   - component: {fileID: 427218086710419541}
   - component: {fileID: 427218086710419543}
   - component: {fileID: 427218086710419542}
+  - component: {fileID: 427218086710419544}
   m_Layer: 0
   m_Name: M1911 Magazine_Black_Full
   m_TagString: Magazine
@@ -7244,7 +7354,7 @@ Transform:
   m_GameObject: {fileID: 425028826542390387}
   serializedVersion: 2
   m_LocalRotation: {x: 0.0609488, y: -0, z: -0, w: 0.99814093}
-  m_LocalPosition: {x: 1.03, y: 0.7461, z: -0.0701}
+  m_LocalPosition: {x: 1.03, y: 0.7642, z: -0.4189}
   m_LocalScale: {x: 0.9791441, y: 0.97914404, z: 0.97914404}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -7430,6 +7540,27 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!65 &427218086710419544
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 425028826542390387}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.10265798, y: 0.090393394, z: 0.021074405}
+  m_Center: {x: 0.0059873806, y: 0.045534845, z: 0.0055372445}
 --- !u!1001 &6288990077139576949
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7506,3 +7637,4 @@ SceneRoots:
   - {fileID: 411502286}
   - {fileID: 6288990077139576949}
   - {fileID: 427218086710419541}
+  - {fileID: 996632770}

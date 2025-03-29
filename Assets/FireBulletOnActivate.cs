@@ -14,17 +14,24 @@ public class FireBulletOnActivate : MonoBehaviour
     public float maxAmmo = 8;
     public InputActionReference reloadButton;
     public bool hasClip = true;
-
+    private XRGrabInteractable grabbable;
+    public XRGrabInteractable clipGrabbable;
     public XRSocketInteractorTag socket;
+    public XRDirectInteractor directInteractor;
+    public XRRayInteractor rayInteractor;
     void Start()
     {
-        XRGrabInteractable grabbable = GetComponent<XRGrabInteractable>();
+        directInteractor = FindAnyObjectByType<XRDirectInteractor>();
+        rayInteractor = FindAnyObjectByType<XRRayInteractor>();
+        grabbable = GetComponent<XRGrabInteractable>();
         XRGrabInteractableTwoAttached hoverable = GetComponent<XRGrabInteractableTwoAttached>();
         hoverable.hoverEntered.AddListener(HoverEnteredThing);
         hoverable.hoverExited.AddListener(HoverExitedThing);
         grabbable.activated.AddListener(FireBullet);
         socket.selectEntered.AddListener(ClipInserted);
         socket.selectExited.AddListener(ClipRemoved);
+        socket.hoverEntered.AddListener(HandNearSocket);
+        socket.hoverExited.AddListener(HandLeftSocket);
         //reloadButton.action.started += Reload;
 
     }
@@ -71,6 +78,20 @@ public class FireBulletOnActivate : MonoBehaviour
     void HoverExitedThing(HoverExitEventArgs arg)
     {
         thing = false;
+    }
+    void HandNearSocket(HoverEnterEventArgs arg)
+    {
+        if(grabbable.isSelected)
+        {
+            return;
+        }
+        directInteractor.enabled = false;
+        rayInteractor.enabled = false;
+    }
+    void HandLeftSocket(HoverExitEventArgs arg)
+    {
+        directInteractor.enabled = true;
+        rayInteractor.enabled = true;
     }
     /*void Reload(InputAction.CallbackContext context)
     {
