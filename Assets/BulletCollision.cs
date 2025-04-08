@@ -4,6 +4,7 @@ public class BulletCollision : MonoBehaviour
 {
     public float dmg = 100;
     public EnemyHandler enemyHandlerRef;
+
     private void OnTriggerEnter(Collider other)
     {
         Debug.Log("bullet collision detected");

@@ -9,6 +9,7 @@ TagManager:
   - Spawner
   - Enemy
   - Magazine
+  - Menu
   layers:
   - Default
   - TransparentFX

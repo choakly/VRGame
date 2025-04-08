@@ -989,6 +989,17 @@
                 },
                 {
                     "name": "",
+                    "id": "61007e40-af5e-4e55-a055-05d67b13f910",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Menu",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "57893a9b-1a47-4bc6-a0f9-37892d81b98f",
                     "path": "<XRController>{LeftHand}/primaryButton",
                     "interactions": "",

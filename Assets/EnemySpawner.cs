@@ -24,7 +24,9 @@ public class EnemySpawner : MonoBehaviour
     public GameObject justSpawned;
     public GameObject cam;
     public Transform playerTransform;
-
+    public GameObject gameMenu;
+    public GameMenuManager menuScript;
+    
     //[SerializeField] private float maxHeight = 1;
 
     void Start()
@@ -33,17 +35,25 @@ public class EnemySpawner : MonoBehaviour
 
         cam = GameObject.FindGameObjectWithTag("MainCamera");
         playerTransform = cam.transform;
+
+        gameMenu = GameObject.FindGameObjectWithTag("Menu");
+        menuScript = gameMenu.GetComponent<GameMenuManager>();
     }
 
     private void Update()
     {
-        //Get a list of all enemies(gameobject)
-        totalEnemies = GameObject.FindGameObjectsWithTag("Enemy");
-
-        if ((aliveEnemies < maxSpawns) && (totalEnemies.Length < maxSpawns))
+        if(!menuScript.gamePaused)
         {
-            if (spawnRem >= spawnTime) SpawnInRadius();
-            else spawnRem += 1 * Time.deltaTime;
+            //Get a list of all enemies(gameobject)
+            totalEnemies = GameObject.FindGameObjectsWithTag("Enemy");
+
+            if((aliveEnemies < maxSpawns) && (totalEnemies.Length < maxSpawns))
+            {
+                if(spawnRem >= spawnTime)
+                    SpawnInRadius();
+                else
+                    spawnRem += 1 * Time.deltaTime;
+            }
         }
     }
 
@@ -147,7 +157,7 @@ public class EnemySpawner : MonoBehaviour
 
     public void EnemyKilled()
     {
-        Debug.Log("EnemyKilled has run");
+        //Debug.Log("EnemyKilled has run");
         //Debug.Log("before killed: " + aliveEnemies);
         aliveEnemies -= 1;
         killCount += 1;
@@ -162,6 +172,7 @@ public class EnemySpawner : MonoBehaviour
         //Get enemy script
         EnemyHandler enemyHandler = enemy.GetComponent<EnemyHandler>();
         enemyHandler.target = playerTransform;
+        enemyHandler.menu = menuScript;
 
         //Set stats (variables)
         //damage, health, etc

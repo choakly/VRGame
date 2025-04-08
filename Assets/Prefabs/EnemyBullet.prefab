@@ -150,3 +150,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dmg: 100
+  menu: {fileID: 0}
+  lastVel: {x: 0, y: 0, z: 0}
+  delay: 0
+  deathTimerMax: 20
+  deathTimerRem: 0

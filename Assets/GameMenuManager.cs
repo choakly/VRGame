@@ -7,6 +7,8 @@ public class GameMenuManager : MonoBehaviour
     public InputActionProperty showButton;
     public Transform head;
     public float spawnDistance = 2;
+    public bool gamePaused = false;
+
     void Start()
     {
         
@@ -19,6 +21,7 @@ public class GameMenuManager : MonoBehaviour
         {
             menu.SetActive(!menu.activeSelf);
             menu.transform.position = head.position + new Vector3(head.forward.x,0,head.forward.z).normalized * spawnDistance;
+            gamePaused = !gamePaused;
         }
 
         menu.transform.LookAt(new Vector3 (head.position.x, menu.transform.position.y, head.position.z));

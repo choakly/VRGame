@@ -1415,7 +1415,7 @@ GameObject:
   - component: {fileID: 411502285}
   m_Layer: 0
   m_Name: Game Menu
-  m_TagString: Untagged
+  m_TagString: Menu
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1447,6 +1447,7 @@ MonoBehaviour:
     m_Reference: {fileID: -3323786171126822452, guid: c348712bda248c246b8c49b3db54643f, type: 3}
   head: {fileID: 555141323}
   spawnDistance: 2
+  gamePaused: 0
 --- !u!4 &411502286
 Transform:
   m_ObjectHideFlags: 0
