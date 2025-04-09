@@ -24,6 +24,7 @@ public class EnemyHandler : MonoBehaviour
     public float killDelay = 2;
     public float killTimer;
 
+    //This is a start
     void Start()
     {
         health = maxHealth;
