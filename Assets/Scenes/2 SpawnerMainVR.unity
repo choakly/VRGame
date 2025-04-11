@@ -1448,6 +1448,8 @@ MonoBehaviour:
   head: {fileID: 555141323}
   spawnDistance: 2
   gamePaused: 0
+  gun: {fileID: 1407093904}
+  fireGun: {fileID: 0}
 --- !u!4 &411502286
 Transform:
   m_ObjectHideFlags: 0

@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class GameMenuManager : MonoBehaviour
 {
@@ -8,10 +9,12 @@ public class GameMenuManager : MonoBehaviour
     public Transform head;
     public float spawnDistance = 2;
     public bool gamePaused = false;
+    public GameObject gun;
+    private FireBulletOnActivate fireGun;
 
     void Start()
     {
-        
+        fireGun = gun.GetComponent<FireBulletOnActivate>();
     }
 
     // Update is called once per frame
@@ -22,6 +25,9 @@ public class GameMenuManager : MonoBehaviour
             menu.SetActive(!menu.activeSelf);
             menu.transform.position = head.position + new Vector3(head.forward.x,0,head.forward.z).normalized * spawnDistance;
             gamePaused = !gamePaused;
+
+            if(fireGun.isActiveAndEnabled) fireGun.enabled = false;
+            else fireGun.enabled = true;
         }
 
         menu.transform.LookAt(new Vector3 (head.position.x, menu.transform.position.y, head.position.z));
