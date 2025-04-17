@@ -73,7 +73,6 @@ public class EnemyHandler : MonoBehaviour
 
     private void OnDestroy()
     {
-        //Debug.Log("Enemy OnDestroy");
         script.EnemyKilled();
     }//END OnDestroy
 
@@ -83,7 +82,6 @@ public class EnemyHandler : MonoBehaviour
         spawnedBullet.transform.position = bulletSpawnPoint.position;
         spawnedBullet.GetComponent<Rigidbody>().linearVelocity = bulletSpawnPoint.forward * bulletSpd;
         spawnedBullet.GetComponent<EnemyBullet>().menu = menu;
-        //Destroy(spawnedBullet, 20);
 
         fireRate = 0;
     }

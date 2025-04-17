@@ -58,3 +58,7 @@ MonoBehaviour:
   canSpawn: 1
   justSpawned: {fileID: 0}
   cam: {fileID: 0}
+  playerTransform: {fileID: 0}
+  gameMenu: {fileID: 0}
+  menuScript: {fileID: 0}
+  gameHandler: {fileID: 0}

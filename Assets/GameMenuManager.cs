@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.UI;
 
 public class GameMenuManager : MonoBehaviour
 {
@@ -11,9 +10,13 @@ public class GameMenuManager : MonoBehaviour
     public bool gamePaused = false;
     public GameObject gun;
     private FireBulletOnActivate fireGun;
+    public PlayerHandler player;
 
     void Start()
     {
+        GameObject p = GameObject.FindGameObjectWithTag("Player");
+        player = p.GetComponent<PlayerHandler>();
+
         fireGun = gun.GetComponent<FireBulletOnActivate>();
     }
 
@@ -32,5 +35,7 @@ public class GameMenuManager : MonoBehaviour
 
         menu.transform.LookAt(new Vector3 (head.position.x, menu.transform.position.y, head.position.z));
         menu.transform.forward *= -1;
+
+        if(player.isDead) gamePaused = true;
     }
 }

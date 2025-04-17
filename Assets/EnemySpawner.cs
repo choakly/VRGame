@@ -22,9 +22,7 @@ public class EnemySpawner : MonoBehaviour
     public float spawnRem = 0;
     public bool canSpawn = true;
     public GameObject justSpawned;
-    public GameObject cam;
     public Transform playerTransform;
-    public GameObject gameMenu;
     public GameMenuManager menuScript;
     
     //[SerializeField] private float maxHeight = 1;
@@ -33,10 +31,10 @@ public class EnemySpawner : MonoBehaviour
     {
         aliveEnemies = 0;
 
-        cam = GameObject.FindGameObjectWithTag("MainCamera");
+        GameObject cam = GameObject.FindGameObjectWithTag("MainCamera");
         playerTransform = cam.transform;
 
-        gameMenu = GameObject.FindGameObjectWithTag("Menu");
+        GameObject gameMenu = GameObject.FindGameObjectWithTag("Menu");
         menuScript = gameMenu.GetComponent<GameMenuManager>();
     }
 
@@ -46,13 +44,10 @@ public class EnemySpawner : MonoBehaviour
         {
             //Get a list of all enemies(gameobject)
             totalEnemies = GameObject.FindGameObjectsWithTag("Enemy");
-
             if((aliveEnemies < maxSpawns) && (totalEnemies.Length < maxSpawns))
             {
-                if(spawnRem >= spawnTime)
-                    SpawnInRadius();
-                else
-                    spawnRem += 1 * Time.deltaTime;
+                if(spawnRem >= spawnTime) SpawnInRadius();
+                else spawnRem += 1 * Time.deltaTime;
             }
         }
     }
@@ -80,8 +75,8 @@ public class EnemySpawner : MonoBehaviour
 
                 if(distToE <= minDistForEnemies)
                 {
-                    Debug.Log("Enemy too close");
-                    Debug.Log("dist to e: " + distToE);
+                    //Debug.Log("Enemy too close");
+                    //Debug.Log("dist to e: " + distToE);
                     canSpawn = false;
                     break;
                 }
@@ -92,7 +87,7 @@ public class EnemySpawner : MonoBehaviour
         {
             //Generate random position
             randomPos = Random.insideUnitSphere * maxRadius;
-            Debug.Log("New spawn position");
+            //Debug.Log("New spawn position");
 
             //Height Adjustments
             randomPos.y = 1;
@@ -108,8 +103,8 @@ public class EnemySpawner : MonoBehaviour
 
                     if (distToE <= minDistForEnemies)
                     {
-                        Debug.Log("While. Enemy too close");
-                        Debug.Log("While. dist to e: " + distToE);
+                        //Debug.Log("While. Enemy too close");
+                        //Debug.Log("While. dist to e: " + distToE);
                         break;
                     }
                 }

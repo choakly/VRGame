@@ -149,7 +149,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d368032a0f325864b9df750051f3485d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dmg: 100
+  dmg: 5
   menu: {fileID: 0}
   lastVel: {x: 0, y: 0, z: 0}
   delay: 0
