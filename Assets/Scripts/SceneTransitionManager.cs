@@ -7,6 +7,7 @@ public class SceneTransitionManager : MonoBehaviour
 {
     public FadeScreen fadeScreen;
     public static SceneTransitionManager singleton;
+    public HighScoreHandler highScoreHandler;
 
     private void Awake()
     {
@@ -26,6 +27,8 @@ public class SceneTransitionManager : MonoBehaviour
         fadeScreen.FadeOut();
         yield return new WaitForSeconds(fadeScreen.fadeDuration);
 
+        highScoreHandler.Invoke("SaveScoreEvent", 0.1f);
+
         //Launch the new scene
         SceneManager.LoadScene(sceneIndex);
     }
@@ -37,6 +40,8 @@ public class SceneTransitionManager : MonoBehaviour
 
     IEnumerator GoToSceneAsyncRoutine(int sceneIndex)
     {
+        highScoreHandler.Invoke("SaveScoreEvent", 0.1f);
+
         fadeScreen.FadeOut();
         //Launch the new scene
         AsyncOperation operation = SceneManager.LoadSceneAsync(sceneIndex);

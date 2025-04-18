@@ -18,6 +18,7 @@ public class GameStartMenu : MonoBehaviour
     public Button quitButton;
 
     public List<Button> returnButtons;
+    [SerializeField] GameObject highScorePrefab;
 
     // Start is called before the first frame update
     void Start()

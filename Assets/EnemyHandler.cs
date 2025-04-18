@@ -23,6 +23,7 @@ public class EnemyHandler : MonoBehaviour
     [Header("I need these for testing")]
     public float killDelay = 2;
     public float killTimer;
+    public bool hitByBullet = false;
 
     //This is a start
     void Start()
@@ -48,11 +49,9 @@ public class EnemyHandler : MonoBehaviour
             //Always look at player
             transform.LookAt(target);
 
-            /*if(killTimer >= killDelay)
-                DealDamage(100);
-            else
-                killTimer += 1 * Time.deltaTime;
-            */
+            //if(killTimer >= killDelay) DealDamage(100, true);
+            //else killTimer += 1 * Time.deltaTime;
+            
             if(health <= 0)
             {
                 Destroy(gameObject);
@@ -65,15 +64,16 @@ public class EnemyHandler : MonoBehaviour
         }
     }
 
-    public void DealDamage(float dmg)
+    public void DealDamage(float dmg, bool hitType)
     {
+        hitByBullet = hitType;
         Debug.Log("Dealt damage to enemy health.");
         health = health - dmg;
     }
 
     private void OnDestroy()
     {
-        script.EnemyKilled();
+        if(hitByBullet) script.EnemyKilled();
     }//END OnDestroy
 
     public void FireBullet()

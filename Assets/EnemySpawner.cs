@@ -24,6 +24,7 @@ public class EnemySpawner : MonoBehaviour
     public GameObject justSpawned;
     public Transform playerTransform;
     public GameMenuManager menuScript;
+    public HighScoreHandler scoreHandler;
     
     //[SerializeField] private float maxHeight = 1;
 
@@ -36,6 +37,9 @@ public class EnemySpawner : MonoBehaviour
 
         GameObject gameMenu = GameObject.FindGameObjectWithTag("Menu");
         menuScript = gameMenu.GetComponent<GameMenuManager>();
+
+        GameObject score = GameObject.FindGameObjectWithTag("HighscoreObj");
+        scoreHandler = score.GetComponent<HighScoreHandler>();
     }
 
     private void Update()
@@ -156,6 +160,8 @@ public class EnemySpawner : MonoBehaviour
         //Debug.Log("before killed: " + aliveEnemies);
         aliveEnemies -= 1;
         killCount += 1;
+        scoreHandler.AddPoints(killCount * 10);
+        //Debug.Log(scoreHandler.highscore.playerScore.ToString());
         //Debug.Log("after after: " + aliveEnemies);
 
         //Every 10 kills reduce the spawn timer

@@ -15,7 +15,7 @@ public class BulletCollision : MonoBehaviour
 
             //Deal damage to collider (enemy)
             enemyHandlerRef = other.gameObject.GetComponent<EnemyHandler>();
-            enemyHandlerRef.DealDamage(dmg);
+            enemyHandlerRef.DealDamage(dmg, true);
 
             //Destroy bullet if enemy is hit
             Destroy(gameObject);

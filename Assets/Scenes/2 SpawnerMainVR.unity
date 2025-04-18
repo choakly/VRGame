@@ -428,7 +428,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 100
   health: 100
-  playerName: 
+  playerName: Player
   charCont: {fileID: 33166456}
   capsuleCollider: {fileID: 33166460}
   transitionManager: {fileID: 292345517}
@@ -1129,6 +1129,67 @@ Animator:
   m_CorrespondingSourceObject: {fileID: 5686134208192617028, guid: 1fd3a7c43c8190f4d8c167ebde694364, type: 3}
   m_PrefabInstance: {fileID: 245681147}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &248199802
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 3291195592009748477, guid: fe68c6ac1a6d4cc439d8db21adfa0f38, type: 3}
+      propertyPath: m_Name
+      value: HighscorePersistant
+      objectReference: {fileID: 0}
+    - target: {fileID: 3291195592009748477, guid: fe68c6ac1a6d4cc439d8db21adfa0f38, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8440506339820165707, guid: fe68c6ac1a6d4cc439d8db21adfa0f38, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 9.211465
+      objectReference: {fileID: 0}
+    - target: {fileID: 8440506339820165707, guid: fe68c6ac1a6d4cc439d8db21adfa0f38, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.7818655
+      objectReference: {fileID: 0}
+    - target: {fileID: 8440506339820165707, guid: fe68c6ac1a6d4cc439d8db21adfa0f38, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 12.970825
+      objectReference: {fileID: 0}
+    - target: {fileID: 8440506339820165707, guid: fe68c6ac1a6d4cc439d8db21adfa0f38, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8440506339820165707, guid: fe68c6ac1a6d4cc439d8db21adfa0f38, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8440506339820165707, guid: fe68c6ac1a6d4cc439d8db21adfa0f38, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8440506339820165707, guid: fe68c6ac1a6d4cc439d8db21adfa0f38, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8440506339820165707, guid: fe68c6ac1a6d4cc439d8db21adfa0f38, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8440506339820165707, guid: fe68c6ac1a6d4cc439d8db21adfa0f38, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8440506339820165707, guid: fe68c6ac1a6d4cc439d8db21adfa0f38, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: fe68c6ac1a6d4cc439d8db21adfa0f38, type: 3}
 --- !u!1 &261480695
 GameObject:
   m_ObjectHideFlags: 0
@@ -1465,6 +1526,7 @@ MonoBehaviour:
   spawnDistance: 2
   gamePaused: 0
   gun: {fileID: 1407093904}
+  player: {fileID: 0}
 --- !u!4 &411502286
 Transform:
   m_ObjectHideFlags: 0
@@ -3051,6 +3113,10 @@ PrefabInstance:
       propertyPath: gameHandler
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 8841422738568278765, guid: b09d33c8b7830a34d89d176d138cba96, type: 3}
+      propertyPath: highScoreHandler
+      value: 
+      objectReference: {fileID: 1543052550755257897, guid: fe68c6ac1a6d4cc439d8db21adfa0f38, type: 3}
     - target: {fileID: 8841422738568278766, guid: b09d33c8b7830a34d89d176d138cba96, type: 3}
       propertyPath: m_Name
       value: Transition Manager
@@ -7778,6 +7844,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7844992401962352079, guid: 8c85ab5792eccfc4e9283f5c71b01f10, type: 3}
+      propertyPath: scoreHandler
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 8477406434413572768, guid: 8c85ab5792eccfc4e9283f5c71b01f10, type: 3}
       propertyPath: m_Name
       value: Spawner
@@ -7808,3 +7878,4 @@ SceneRoots:
   - {fileID: 427218086710419541}
   - {fileID: 996632770}
   - {fileID: 1117968099}
+  - {fileID: 248199802}

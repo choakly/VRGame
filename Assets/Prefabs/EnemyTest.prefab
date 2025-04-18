@@ -157,6 +157,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spawner: {fileID: 0}
   script: {fileID: 0}
+  menu: {fileID: 0}
   maxHealth: 100
   health: 0
   distToOther: 0
@@ -168,3 +169,5 @@ MonoBehaviour:
   damage: 1
   bulletSpd: 2
   target: {fileID: 0}
+  killDelay: 10
+  killTimer: 0
