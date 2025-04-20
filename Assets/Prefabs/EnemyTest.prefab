@@ -169,5 +169,6 @@ MonoBehaviour:
   damage: 1
   bulletSpd: 2
   target: {fileID: 0}
-  killDelay: 10
+  killDelay: 9
   killTimer: 0
+  hitByBullet: 0

@@ -7,10 +7,12 @@ public class ScoreManager : MonoBehaviour
     private TextMeshProUGUI inputScore;
     [SerializeField]
     private TMP_InputField inputName;
+    [SerializeField]
+    private TextMeshProUGUI lastScore;
 
     public UnityEvent<string, int> submitScoreEvent;
 
     public void SubmitScore() {
-        submitScoreEvent.Invoke(inputName.text, int.Parse(inputScore.text));
+        submitScoreEvent.Invoke(inputName.text, int.Parse(lastScore.text));//int.Parse(inputScore.text));
     }
 }

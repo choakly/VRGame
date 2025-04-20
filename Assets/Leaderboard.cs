@@ -14,23 +14,24 @@ public class Leaderboard : MonoBehaviour
     private string publicLeaderboardKey = "51f81ad0547b8a0f1a32a0726f00b0437135ac843c41bc96f352ce4c9fae588e";
     public TextMeshProUGUI playerHighscoreUI;
     public HighScoreHandler highScoreHandler;
+    [SerializeField] TextMeshProUGUI lastScore;
 
     private void Start()
     {
         GetLeaderboard();
+        Invoke("DisplaySaveData", 0.5f);
     }
 
-    private void Update()
+    private void DisplaySaveData()
     {
-        if(highScoreHandler != null)
-        {
-            playerHighscoreUI.text = "Your Highscore: " + highScoreHandler.highscore.playerScore.ToString();
-        }
-        else
+        if(highScoreHandler == null)
         {
             GameObject hs = GameObject.FindGameObjectWithTag("HighscoreObj");
             highScoreHandler = hs.GetComponent<HighScoreHandler>();
         }
+
+        playerHighscoreUI.text = "Your Highscore: " + highScoreHandler.highscore.playerScore.ToString();
+        lastScore.text = highScoreHandler.tempScore.playerScore.ToString();
     }
 
     public void GetLeaderboard() {

@@ -40,6 +40,8 @@ public class EnemySpawner : MonoBehaviour
 
         GameObject score = GameObject.FindGameObjectWithTag("HighscoreObj");
         scoreHandler = score.GetComponent<HighScoreHandler>();
+
+        scoreHandler.Invoke("RemoveTempScore",0.5f);
     }
 
     private void Update()

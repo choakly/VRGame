@@ -1,9 +1,7 @@
 using System;
-using System.IO;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEditor;
 
 [Serializable]
 public class HighScore
@@ -23,8 +21,8 @@ public class HighScoreHandler : MonoBehaviour
     List<HighScore> scoreList = new List<HighScore>();
     public HighScore highscore;                             //The score to be written/saved to json
     public HighScore tempScore = new HighScore("temp", 0);  //Temporary score
-    //[SerializeField] int maxCount = 1;
     [SerializeField] string fileName;
+    [SerializeField] int maxCount = 2;
 
     public UnityEvent<HighScore> savePlayerScore;
 
@@ -54,6 +52,8 @@ public class HighScoreHandler : MonoBehaviour
 
     private void Start()
     {
+        scoreList.Capacity = maxCount;
+
         Debug.Log("Editor path: " + Application.dataPath);
 
         LoadHighScore();
@@ -68,15 +68,34 @@ public class HighScoreHandler : MonoBehaviour
     private void LoadHighScore()
     {
         Debug.Log("Loadhighscore");
-        //scoreList = JSONFileHandler.ReadListFromJSON<HighScore>(fileName);
-        highscore = JSONFileHandler.ReadFromJSON<HighScore>(fileName);
+        scoreList = JSONFileHandler.ReadListFromJSON<HighScore>(fileName);
+
+        if((scoreList.Count == 0))// || (scoreList.Equals("[]")))
+        {
+            Debug.Log("score list is empty");
+            scoreList.Insert(0, new HighScore("name", 1));
+            scoreList.Insert(1, new HighScore("temp", 0));
+        }
+
+        highscore = scoreList[0];
+        tempScore = scoreList[1];
+        //highscore = JSONFileHandler.ReadFromJSON<HighScore>(fileName);
     }
 
     private void SaveHighScore()
     {
         Debug.Log("SaveHighScore has run");
-        //JSONFileHandler.SaveToJSON<HighScore>(scoreList, fileName);
-        JSONFileHandler.SaveToJSON<HighScore>(highscore, fileName);
+
+        //scoreList.Clear();
+        for(int i = 0; i < scoreList.Count; i++)
+        {
+            if(i == 0) scoreList[i] = highscore;
+            if(i == 1) scoreList[i] = tempScore;
+        }
+
+        if(scoreList != null) JSONFileHandler.SaveToJSON<HighScore>(scoreList, fileName);
+        else Debug.LogWarning("No data to save!");
+        //JSONFileHandler.SaveToJSON<HighScore>(highscore, fileName);
     }
 
     public void AddPoints(int points)
@@ -94,6 +113,11 @@ public class HighScoreHandler : MonoBehaviour
             highscore = element;
             //SaveHighScore();
         }
+    }
+
+    public void RemoveTempScore()
+    {
+        tempScore = new HighScore("temp", 0);
     }
 
     public void RemoveHighScore(HighScore element, int index)
