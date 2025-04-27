@@ -1,3 +1,4 @@
+//using System;
 using UnityEngine;
 
 public class EnemyHandler : MonoBehaviour
@@ -6,6 +7,7 @@ public class EnemyHandler : MonoBehaviour
     public GameObject spawner;
     public EnemySpawner script;
     public GameMenuManager menu;
+    public GameObject gunRef;
     public float maxHealth = 100;
     public float health;
     public float distToOther;
@@ -46,8 +48,12 @@ public class EnemyHandler : MonoBehaviour
     {
         if(!menu.gamePaused)
         {
+            //New Look at function
+            LookAtTarget();
+            gunRef.GetComponent<EnemyGunHandler>().MoveGun(target);
+
             //Always look at player
-            transform.LookAt(target);
+            //transform.LookAt(target);
 
             //if(killTimer >= killDelay) DealDamage(100, true);
             //else killTimer += 1 * Time.deltaTime;
@@ -62,6 +68,14 @@ public class EnemyHandler : MonoBehaviour
             else
                 fireRate += 1 * Time.deltaTime;
         }
+    }
+
+    private void LookAtTarget()
+    {
+        Vector3 lookPos = target.position - transform.position;
+        lookPos.y = 0;
+        Quaternion rot = Quaternion.LookRotation(lookPos);
+        transform.rotation = Quaternion.Slerp(transform.rotation, rot, 0.2f);
     }
 
     public void DealDamage(float dmg, bool hitType)

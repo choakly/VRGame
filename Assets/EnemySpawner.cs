@@ -1,15 +1,18 @@
 using UnityEngine;
-using UnityEngine.Rendering;
+
 
 public class EnemySpawner : MonoBehaviour
 {
     [Header("This object needs 'Spawner' tag")]
     [Header("Initial Enemy Spawn Variables")]
-    public GameObject enemy;
+    private GameObject enemy;
+    //private int totalTypes = 3;
+    public GameObject[] enemyList;
+
     public int maxSpawns = 10;
     public float spawnTime = 5;
-    public float timeReducePerSet = 0.1f;
-    public float minDistForEnemies = 2;
+    public float timeReducePerSet = 0.5f;
+    public float minDistForEnemies = 4;
 
     [Header("Min = player area (blue sphere)" +  "\n" + "Max = furthest out enemies can be (green)")]
     public float maxRadius = 20;
@@ -64,7 +67,7 @@ public class EnemySpawner : MonoBehaviour
         Vector3 randomPos = Random.insideUnitSphere * maxRadius;
 
         //Set the y to height of enemy
-        randomPos.y = 1;
+        randomPos.y = 0;
 
         #region Check distance compared to player area and between enemies
 
@@ -96,7 +99,7 @@ public class EnemySpawner : MonoBehaviour
             //Debug.Log("New spawn position");
 
             //Height Adjustments
-            randomPos.y = 1;
+            randomPos.y = 0;
 
             dist = Vector3.Distance(randomPos, transform.position);
 
@@ -132,6 +135,12 @@ public class EnemySpawner : MonoBehaviour
         }//END While
 
         #endregion
+
+        //Choose what type of enemy spawns next
+        int rand = Random.Range(1, 100);
+
+        if(rand >= 70) enemy = enemyList[1];
+        else enemy = enemyList[0];
 
         justSpawned = Instantiate(enemy, randomPos, Quaternion.identity);
         SetStats(justSpawned);

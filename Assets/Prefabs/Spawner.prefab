@@ -44,11 +44,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b26841a442ca44141a03d6bae6e3aef2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemy: {fileID: 5800811084249616717, guid: 83fd963c760825e4395bfe36b4adf4e3, type: 3}
+  enemyList:
+  - {fileID: 4451910049165779210, guid: 18c02e3ef77e9ae46b82ed0db688f528, type: 3}
+  - {fileID: 2810057810072291451, guid: eb37a1b8d4f470f4184cfe7fddb4a145, type: 3}
+  - {fileID: 5800811084249616717, guid: 83fd963c760825e4395bfe36b4adf4e3, type: 3}
   maxSpawns: 10
   spawnTime: 5
-  timeReducePerSet: 0.1
-  minDistForEnemies: 2
+  timeReducePerSet: 0.5
+  minDistForEnemies: 4
   maxRadius: 20
   minRadius: 10
   aliveEnemies: 0
@@ -57,8 +60,6 @@ MonoBehaviour:
   spawnRem: 0
   canSpawn: 1
   justSpawned: {fileID: 0}
-  cam: {fileID: 0}
   playerTransform: {fileID: 0}
-  gameMenu: {fileID: 0}
   menuScript: {fileID: 0}
-  gameHandler: {fileID: 0}
+  scoreHandler: {fileID: 0}
