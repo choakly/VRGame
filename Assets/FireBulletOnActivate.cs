@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.XR.Interaction.Toolkit;
@@ -19,8 +21,11 @@ public class FireBulletOnActivate : MonoBehaviour
     public XRSocketInteractorTag socket;
     public XRDirectInteractor directInteractor;
     public XRRayInteractor rayInteractor;
+    public AudioSource source;
+    public AudioClip fireSound;
     void Start()
     {
+        
         directInteractor = FindAnyObjectByType<XRDirectInteractor>();
         rayInteractor = FindAnyObjectByType<XRRayInteractor>();
         grabbable = GetComponent<XRGrabInteractable>();
@@ -41,14 +46,17 @@ public class FireBulletOnActivate : MonoBehaviour
     {
        
     }
+    
 
     public void FireBullet(ActivateEventArgs arg)
     {
         if(ammo > 0 && hasClip)
         {
+
             GameObject spawnedBullet = Instantiate(bullet);
             spawnedBullet.transform.position = spawnPoint.position;
             spawnedBullet.GetComponent<Rigidbody>().linearVelocity = spawnPoint.forward * fireSpeed;
+            source.PlayOneShot(fireSound);
             Destroy(spawnedBullet, 5);
             ammo--;
         }

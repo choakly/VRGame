@@ -1,4 +1,5 @@
 //using System;
+using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -22,6 +23,8 @@ public class EnemyHandler : MonoBehaviour
     public float damage = 1;
     public float bulletSpd = 2;
     public Transform target;
+    public AudioSource source;
+    public AudioClip fireSound;
 
     [Header("I need these for testing")]
     public float killDelay = 2;
@@ -38,6 +41,7 @@ public class EnemyHandler : MonoBehaviour
         fireDelay = 5 + random;
 
         fireRate = 0;
+        
 
         //Get spawner reference
         spawner = GameObject.FindGameObjectWithTag("Spawner");
@@ -71,6 +75,8 @@ public class EnemyHandler : MonoBehaviour
         }
     }
 
+    
+
     private void LookAtTarget()
     {
         Vector3 lookPos = target.position - transform.position;
@@ -94,6 +100,7 @@ public class EnemyHandler : MonoBehaviour
     public void FireBullet()
     {
         GameObject spawnedBullet = Instantiate(bullet);
+        source.PlayOneShot(fireSound);
         spawnedBullet.transform.position = bulletSpawnPoint.position;
         spawnedBullet.transform.rotation = bulletSpawnPoint.rotation;
         spawnedBullet.GetComponent<Rigidbody>().linearVelocity = bulletSpawnPoint.forward * bulletSpd;
