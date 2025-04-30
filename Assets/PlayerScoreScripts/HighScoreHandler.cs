@@ -18,9 +18,11 @@ public class HighScore
 
 public class HighScoreHandler : MonoBehaviour
 {
+    public static HighScoreHandler inst;
+
     List<HighScore> scoreList = new List<HighScore>();
     public HighScore highscore;                             //The score to be written/saved to json
-    public HighScore tempScore = new HighScore("temp", 0);  //Temporary score
+    public HighScore tempScore;// = new HighScore("Name", 0);  //Temporary score
     [SerializeField] string fileName;
     [SerializeField] int maxCount = 2;
 
@@ -40,14 +42,21 @@ public class HighScoreHandler : MonoBehaviour
 
     private void Awake()
     {
-        GameObject[] objs = GameObject.FindGameObjectsWithTag("HighscoreObj");
+        //Keep only one highscorehandler object
+        if(inst == null) inst = this;
+        else if(inst != this)
+        {
+            Debug.LogWarning("HighScoreHandler already exists, destroying object!");
+            Destroy(this);
+        }
+        /*GameObject[] objs = GameObject.FindGameObjectsWithTag("HighscoreObj");
 
         if(objs.Length > 1)
         {
             Destroy(objs[1]);
         }
 
-        DontDestroyOnLoad(this.gameObject);
+        DontDestroyOnLoad(this.gameObject);*/
     }
 
     private void Start()
@@ -73,8 +82,8 @@ public class HighScoreHandler : MonoBehaviour
         if((scoreList.Count == 0))// || (scoreList.Equals("[]")))
         {
             Debug.Log("score list is empty");
-            scoreList.Insert(0, new HighScore("name", 1));
-            scoreList.Insert(1, new HighScore("temp", 0));
+            scoreList.Insert(0, new HighScore("abcd", 0));
+            scoreList.Insert(1, new HighScore("abcd", 0));
         }
 
         highscore = scoreList[0];

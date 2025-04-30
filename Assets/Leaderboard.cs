@@ -30,7 +30,7 @@ public class Leaderboard : MonoBehaviour
             highScoreHandler = hs.GetComponent<HighScoreHandler>();
         }
 
-        playerHighscoreUI.text = "Your Highscore: " + highScoreHandler.highscore.playerScore.ToString();
+        playerHighscoreUI.text = highScoreHandler.highscore.playerName + ": " + highScoreHandler.highscore.playerScore.ToString();
         lastScore.text = highScoreHandler.tempScore.playerScore.ToString();
     }
 
@@ -49,5 +49,8 @@ public class Leaderboard : MonoBehaviour
             username.Substring(0, 4);
             GetLeaderboard();
         }));
+
+        if(highScoreHandler.highscore.playerName.Equals("abcd")) highScoreHandler.highscore.playerName = username;
+        highScoreHandler.tempScore.playerName = username.Substring(0, 4);
     }
 }

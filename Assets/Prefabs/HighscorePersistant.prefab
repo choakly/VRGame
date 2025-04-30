@@ -44,7 +44,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba211eaeee145724ebfbae1a3e2646c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  highscore:
+    playerName: 
+    playerScore: 0
+  tempScore:
+    playerName: 
+    playerScore: 0
   fileName: playerscore.json
+  maxCount: 2
   savePlayerScore:
     m_PersistentCalls:
       m_Calls: []
