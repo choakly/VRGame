@@ -750,12 +750,12 @@ MonoBehaviour:
   maxHealth: 150
   health: 0
   distToOther: 0
-  bullet: {fileID: 6627883642534449582, guid: 1533d896ccf532944b3da6c0de75e102, type: 3}
+  bullet: {fileID: 6785078352667179890, guid: ed39e3a265e810546b2dd582eac90dd4, type: 3}
   bulletSpawnPoint: {fileID: 3135479923031822646}
   fireDelay: 0
   fireRate: 0
   random: 0
-  damage: 2
+  damage: 5
   bulletSpd: 4
   target: {fileID: 0}
   killDelay: 2
@@ -1433,8 +1433,8 @@ Transform:
   m_GameObject: {fileID: 4269247001757782164}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.315, y: 3.155, z: 1.224}
-  m_LocalScale: {x: 0.7, y: 0.7, z: 0.7}
+  m_LocalPosition: {x: 0.315, y: 3.118, z: 1.309}
+  m_LocalScale: {x: 0.75, y: 0.75, z: 0.75}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3135479923031822646}

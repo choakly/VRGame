@@ -1,4 +1,5 @@
 //using System;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class EnemyHandler : MonoBehaviour
@@ -94,8 +95,10 @@ public class EnemyHandler : MonoBehaviour
     {
         GameObject spawnedBullet = Instantiate(bullet);
         spawnedBullet.transform.position = bulletSpawnPoint.position;
+        spawnedBullet.transform.rotation = bulletSpawnPoint.rotation;
         spawnedBullet.GetComponent<Rigidbody>().linearVelocity = bulletSpawnPoint.forward * bulletSpd;
         spawnedBullet.GetComponent<EnemyBullet>().menu = menu;
+        spawnedBullet.GetComponent<EnemyBullet>().dmg = damage;
 
         fireRate = 0;
     }
