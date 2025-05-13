@@ -10,6 +10,9 @@ public class EnemySpawner : MonoBehaviour
     public GameObject[] enemyList;
 
     public int maxSpawns = 10;
+    public int maxEnemyPerWave = 10;
+    public int totalEnemiesSpawned;
+    public int wave = 1;
     public float spawnTime = 5;
     public float timeReducePerSet = 0.5f;
     public float minDistForEnemies = 4;
@@ -21,6 +24,7 @@ public class EnemySpawner : MonoBehaviour
     [Header("Do not adjust.")]
     public int aliveEnemies = 0;
     public int killCount = 0;
+    public int waveKillCount = 0;
     public GameObject[] totalEnemies;
     public float spawnRem = 0;
     public bool canSpawn = true;
@@ -28,6 +32,7 @@ public class EnemySpawner : MonoBehaviour
     public Transform playerTransform;
     public GameMenuManager menuScript;
     public HighScoreHandler scoreHandler;
+    public Upgrades upgrades;
     
     //[SerializeField] private float maxHeight = 1;
 
@@ -53,16 +58,26 @@ public class EnemySpawner : MonoBehaviour
         {
             //Get a list of all enemies(gameobject)
             totalEnemies = GameObject.FindGameObjectsWithTag("Enemy");
-            if((aliveEnemies < maxSpawns) && (totalEnemies.Length < maxSpawns))
+            if((aliveEnemies < maxSpawns) && (totalEnemies.Length < maxSpawns) && (totalEnemiesSpawned <= maxEnemyPerWave) && (waveKillCount != maxEnemyPerWave))
             {
-                if(spawnRem >= spawnTime) SpawnInRadius();
+                if(spawnRem >= spawnTime) 
+                {
+                    SpawnInRadius();
+                    totalEnemiesSpawned++;
+                }
                 else spawnRem += 1 * Time.deltaTime;
+            }
+            if (waveKillCount >= maxEnemyPerWave)
+            {
+                upgrades.UpgradeMenu();
+                Debug.Log("Activated");
             }
         }
     }
 
     public void SpawnInRadius()
     {
+
         //Generate random position
         Vector3 randomPos = Random.insideUnitSphere * maxRadius;
 
@@ -171,6 +186,7 @@ public class EnemySpawner : MonoBehaviour
         //Debug.Log("before killed: " + aliveEnemies);
         aliveEnemies -= 1;
         killCount += 1;
+        waveKillCount += 1;
         scoreHandler.AddPoints(killCount * 10);
         //Debug.Log(scoreHandler.highscore.playerScore.ToString());
         //Debug.Log("after after: " + aliveEnemies);
