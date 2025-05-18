@@ -1,16 +1,26 @@
 using UnityEngine;
 
+public enum SpawnerState
+{
+    PRE_WAVE,   //idle and before the wave begins
+    WAVE,       //the actual wave spawning
+    END_WAVE,   //when all enemies are killed
+}
 
 public class EnemySpawner : MonoBehaviour
 {
+    [Header("State machine vars")]
+    public SpawnerState currentState;
+    private SpawnerState lastState;
+
     [Header("This object needs 'Spawner' tag")]
     [Header("Initial Enemy Spawn Variables")]
     private GameObject enemy;
     //private int totalTypes = 3;
     public GameObject[] enemyList;
 
-    public int maxSpawns = 10;
-    public int maxEnemyPerWave = 10;
+    public int maxSpawns = 10;          //Enemies spawned at once
+    public int maxEnemyPerWave = 10;    //Total enemies that spawn per wave
     public int totalEnemiesSpawned;
     public int wave = 1;
     public float spawnTime = 5;
@@ -22,8 +32,8 @@ public class EnemySpawner : MonoBehaviour
     public float minRadius = 10;
 
     [Header("Do not adjust.")]
-    public int aliveEnemies = 0;
-    public int killCount = 0;
+    public int aliveEnemies = 0;        //Goes up as enemies spawn
+    public int killCount = 0;           //Goes up as enemies are killed
     public int waveKillCount = 0;
     public GameObject[] totalEnemies;
     public float spawnRem = 0;
@@ -38,6 +48,9 @@ public class EnemySpawner : MonoBehaviour
 
     void Start()
     {
+        currentState = SpawnerState.PRE_WAVE;
+        lastState = currentState;
+
         aliveEnemies = 0;
 
         GameObject cam = GameObject.FindGameObjectWithTag("MainCamera");
@@ -54,30 +67,69 @@ public class EnemySpawner : MonoBehaviour
 
     private void Update()
     {
+        //if(!menuScript.gamePaused)
+        //{
+        switch(currentState)
+        {
+            case SpawnerState.PRE_WAVE:
+            {
+                //Do nothing until button is pressed/wave should begin
+
+                //When the button is pressed switch state
+                //Use function ChangeState
+
+                break;
+            }
+            case SpawnerState.WAVE:
+            {
+                //Spawn enemies
+                WaveIsCurrent();
+                break;
+            }
+            case SpawnerState.END_WAVE:
+            {
+                //Do things
+                upgrades.UpgradeMenu();
+
+                Debug.Log("END_WAVE State: Activated");
+                break;
+            }
+        } 
+        //}
+    }
+
+    public void WaveIsCurrent()
+    {
         if(!menuScript.gamePaused)
         {
             //Get a list of all enemies(gameobject)
             totalEnemies = GameObject.FindGameObjectsWithTag("Enemy");
             if((aliveEnemies < maxSpawns) && (totalEnemies.Length < maxSpawns) && (totalEnemiesSpawned <= maxEnemyPerWave) && (waveKillCount != maxEnemyPerWave))
             {
-                if(spawnRem >= spawnTime) 
+                if(spawnRem >= spawnTime)
                 {
                     SpawnInRadius();
                     totalEnemiesSpawned++;
                 }
-                else spawnRem += 1 * Time.deltaTime;
+                else
+                {
+                    spawnRem += 1 * Time.deltaTime;
+                }
             }
-            if (waveKillCount >= maxEnemyPerWave)
+            if(waveKillCount >= maxEnemyPerWave)
             {
-                upgrades.UpgradeMenu();
-                Debug.Log("Activated");
+                ChangeState(SpawnerState.END_WAVE);
             }
         }
+    }
+    public void ChangeState(SpawnerState newState)
+    {
+        lastState = currentState;
+        currentState = newState;
     }
 
     public void SpawnInRadius()
     {
-
         //Generate random position
         Vector3 randomPos = Random.insideUnitSphere * maxRadius;
 

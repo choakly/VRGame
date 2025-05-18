@@ -1273,7 +1273,7 @@ PrefabInstance:
       objectReference: {fileID: 1085250559}
     - target: {fileID: 7844992401962352079, guid: 8c85ab5792eccfc4e9283f5c71b01f10, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7844992401962352079, guid: 8c85ab5792eccfc4e9283f5c71b01f10, type: 3}
       propertyPath: enemyList.Array.size
@@ -2987,7 +2987,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 191691847}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b26841a442ca44141a03d6bae6e3aef2, type: 3}
   m_Name: 

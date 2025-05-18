@@ -20,6 +20,7 @@ public class ButtonPushStartEnemies : MonoBehaviour
     public void ToggleEnemySpawn()
     {
         enemySpawner.enabled = true;
+        enemySpawner.ChangeState(SpawnerState.WAVE);
         buttonStand.SetActive(false);
     }
 

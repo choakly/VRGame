@@ -95,7 +95,7 @@ public class Upgrades : MonoBehaviour
         selection2.SetActive(!selection2.activeSelf);
         selection3.SetActive(!selection3.activeSelf);
         
-
+        enemies.ChangeState(SpawnerState.PRE_WAVE);
     }
     void damageUpgrade()
     {
