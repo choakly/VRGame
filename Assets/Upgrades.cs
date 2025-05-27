@@ -13,9 +13,11 @@ public class Upgrades : MonoBehaviour
     
     public EnemySpawner enemies;
     public Transform head;
-    public BulletCollision bullet;
+    public GameObject akPrefab;
     private Dictionary<string, UnityAction> upgradeActions;
     public float spawnDistance = 2;
+    public float gunSpawnDistance = 0.5f;
+    public float damageMultiplier = 1.0f;
     private KeyValuePair<string, UnityAction>[] selectedUpgrades = new KeyValuePair<string, UnityAction>[3];
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     public void Start()
@@ -24,7 +26,7 @@ public class Upgrades : MonoBehaviour
         {
             { "Damage Upgrade", damageUpgrade },
             { "Speed Boost", speedUpgrade },
-            { "New Weapon" ,newGun }
+            { "AK-47 Weapon", () => newGun(akPrefab) }
             
         };
     }
@@ -94,19 +96,29 @@ public class Upgrades : MonoBehaviour
         selection1.SetActive(!selection1.activeSelf);
         selection2.SetActive(!selection2.activeSelf);
         selection3.SetActive(!selection3.activeSelf);
-        
+
         enemies.ChangeState(SpawnerState.PRE_WAVE);
     }
+    
     void damageUpgrade()
     {
-        Debug.Log("Dmg upgrade");
+        damageMultiplier += 0.1f;
     }
     void speedUpgrade()
     {
         Debug.Log("Speed upgrade");
     }
-    void newGun()
+    void newGun(GameObject gunPrefab)
     {
-        Debug.Log("new Weapon");
+        Vector3 spawnPos = head.position + head.forward * gunSpawnDistance;
+        Quaternion spawnRot = Quaternion.LookRotation(new Vector3(head.forward.x, 0, head.forward.z));
+        GameObject gun = Instantiate(gunPrefab, spawnPos, spawnRot);
+
+        var fireScript = gun.GetComponent<FireBulletOnActivate>();
+        if (fireScript != null)
+        {
+            fireScript.upgrades = this;
+        }
+        Debug.Log($"Spawned gun: {gunPrefab.name}");
     }
 }

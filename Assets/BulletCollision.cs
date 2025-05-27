@@ -2,8 +2,7 @@ using UnityEngine;
 
 public class BulletCollision : MonoBehaviour
 {
-    public float dmg = 100;
-    public EnemyHandler enemyHandlerRef;
+    public FireBulletOnActivate sourceGun;
 
     private void OnTriggerEnter(Collider other)
     {
@@ -14,8 +13,13 @@ public class BulletCollision : MonoBehaviour
             Debug.Log("enemy hit by bullet");
 
             //Deal damage to collider (enemy)
-            enemyHandlerRef = other.gameObject.GetComponent<EnemyHandler>();
-            enemyHandlerRef.DealDamage(dmg, true);
+            EnemyHandler enemyHandlerRef = other.GetComponent<EnemyHandler>();
+            if (enemyHandlerRef != null && sourceGun != null)
+            {
+                float dmg = sourceGun.GetDamage();
+                enemyHandlerRef.DealDamage(dmg, true);
+            }
+            
 
             //Destroy bullet if enemy is hit
             Destroy(gameObject);
