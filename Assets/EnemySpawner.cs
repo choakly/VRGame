@@ -24,13 +24,14 @@ public class EnemySpawner : MonoBehaviour
     public int maxSpawns = 10;          //Enemies spawned at once
     public int maxEnemyPerWave = 10;    //Total enemies that spawn per wave
     public int totalEnemiesSpawned;
-    public int wave = 1;
+    public int wave;
     public float spawnTime = 5;
     public float timeReducePerSet = 0.5f;
     public float minDistForEnemies = 4;
     public float preWaveTimer = 30f;
     public bool timerIsRunning = false;
     public TMP_Text timerText;
+    public TMP_Text waveText;
 
     [Header("Min = player area (blue sphere)" + "\n" + "Max = furthest out enemies can be (green)")]
     public float maxRadius = 20;
@@ -57,8 +58,7 @@ public class EnemySpawner : MonoBehaviour
         lastState = currentState;
 
         aliveEnemies = 0;
-
-        
+        wave = 1;
 
         GameObject cam = GameObject.FindGameObjectWithTag("MainCamera");
         playerTransform = cam.transform;
@@ -80,18 +80,20 @@ public class EnemySpawner : MonoBehaviour
         {
             case SpawnerState.PRE_WAVE:
             {
-                    timerText.gameObject.SetActive(true);
-                    if (preWaveTimer > 0)
-                    {
-                        preWaveTimer -= Time.deltaTime;
-                        DisplayTime(preWaveTimer);
-                    }
-                    else
-                    {
-                        Debug.Log("times up");
-                        preWaveTimer = 0;
-                        ChangeState(SpawnerState.WAVE);
-                    }
+                timerText.gameObject.SetActive(true);
+                waveText.gameObject.SetActive(true);
+
+                if (preWaveTimer > 0)
+                {
+                    preWaveTimer -= Time.deltaTime;
+                    DisplayTime(preWaveTimer);
+                }
+                else
+                {
+                    Debug.Log("times up");
+                    preWaveTimer = 0;
+                    ChangeState(SpawnerState.WAVE);
+                }
                     
                 break;
             }
@@ -99,12 +101,13 @@ public class EnemySpawner : MonoBehaviour
             {
                 //Spawn enemies
                 timerText.gameObject.SetActive(false);
+                waveText.gameObject.SetActive(false);
                 WaveIsCurrent();
                 break;
             }
             case SpawnerState.END_WAVE:
             {
-                //Do things
+                //Upgrades
                 upgrades.UpgradeMenu();
 
                 Debug.Log("END_WAVE State: Activated");
@@ -120,6 +123,7 @@ public class EnemySpawner : MonoBehaviour
         float minutes = Mathf.FloorToInt(timeToDisplay / 60);
         float seconds = Mathf.FloorToInt(timeToDisplay % 60);
         timerText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
+        waveText.text = "Wave: " + wave;
     }
 
     public void WaveIsCurrent()
@@ -142,6 +146,8 @@ public class EnemySpawner : MonoBehaviour
             }
             if (waveKillCount >= maxEnemyPerWave)
             {
+                scoreHandler.AddMaxWave(wave);
+                wave += 1;
                 ChangeState(SpawnerState.END_WAVE);
             }
         }

@@ -8,11 +8,13 @@ public class HighScore
 {
     public string playerName;
     public int playerScore;
+    public int playerMaxWave;
 
-    public HighScore(string name, int score)
+    public HighScore(string name, int score, int maxWave)
     {
         playerName = name;
         playerScore = score;
+        playerMaxWave = maxWave;
     }
 }
 
@@ -82,8 +84,8 @@ public class HighScoreHandler : MonoBehaviour
         if((scoreList.Count == 0))// || (scoreList.Equals("[]")))
         {
             Debug.Log("score list is empty");
-            scoreList.Insert(0, new HighScore("abcd", 0));
-            scoreList.Insert(1, new HighScore("abcd", 0));
+            scoreList.Insert(0, new HighScore("abcd", 0, 1));
+            scoreList.Insert(1, new HighScore("abcd", 0, 1));
         }
 
         highscore = scoreList[0];
@@ -124,9 +126,18 @@ public class HighScoreHandler : MonoBehaviour
         }
     }
 
+    public void AddMaxWave(int wave)
+    {
+        Debug.Log("AddMaxWave");
+        if(wave > highscore.playerMaxWave)
+        {
+            highscore.playerMaxWave = wave;
+        }
+    }
+
     public void RemoveTempScore()
     {
-        tempScore = new HighScore("temp", 0);
+        tempScore = new HighScore("temp", 0, 1);
     }
 
     public void RemoveHighScore(HighScore element, int index)
