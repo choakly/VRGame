@@ -14,6 +14,7 @@ public class Upgrades : MonoBehaviour
     public EnemySpawner enemies;
     public Transform head;
     public GameObject akPrefab;
+    public GameObject akClipPrefab;
     private Dictionary<string, UnityAction> upgradeActions;
     public float spawnDistance = 2;
     public float gunSpawnDistance = 0.5f;
@@ -26,7 +27,7 @@ public class Upgrades : MonoBehaviour
         {
             { "Damage Upgrade", damageUpgrade },
             { "Speed Boost", speedUpgrade },
-            { "AK-47 Weapon", () => newGun(akPrefab) }
+            { "AK-47 Weapon", () => newGun(akPrefab, akClipPrefab) }
             
         };
     }
@@ -108,14 +109,16 @@ public class Upgrades : MonoBehaviour
     {
         Debug.Log("Speed upgrade");
     }
-    void newGun(GameObject gunPrefab)
+    void newGun(GameObject gunPrefab, GameObject clipPrefab)
     {
         Vector3 spawnPos = head.position + head.forward * gunSpawnDistance;
         Quaternion spawnRot = Quaternion.LookRotation(new Vector3(head.forward.x, 0, head.forward.z));
         GameObject gun = Instantiate(gunPrefab, spawnPos, spawnRot);
+        GameObject clip = Instantiate(clipPrefab, spawnPos, spawnRot);
 
         var fireScript = gun.GetComponent<FireBulletOnActivate>();
-        if (fireScript != null)
+        var fire1script = clip.GetComponent<FireBulletOnActivate>();
+        if (fireScript != null && fire1script != null)
         {
             fireScript.upgrades = this;
         }
