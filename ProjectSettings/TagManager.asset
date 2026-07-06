@@ -11,6 +11,7 @@ TagManager:
   - Magazine
   - Menu
   - HighscoreObj
+  - SpawnDoor
   layers:
   - Default
   - TransparentFX

@@ -1,6 +1,7 @@
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine.UIElements;
+using Color = UnityEngine.Color;
 
 public enum SpawnerState
 {
@@ -9,17 +10,27 @@ public enum SpawnerState
     END_WAVE,   //when all enemies are killed
 }
 
+public enum SpawnType
+{
+    RADIUS,
+    DOORS_RANDOM,
+    DOORS_CLOSEST
+}
+
 public class EnemySpawner : MonoBehaviour
 {
     [Header("State machine vars")]
     public SpawnerState currentState;
     private SpawnerState lastState;
+    [SerializeField] SpawnType spawnType;
 
     [Header("This object needs 'Spawner' tag")]
     [Header("Initial Enemy Spawn Variables")]
     private GameObject enemy;
     //private int totalTypes = 3;
-    public GameObject[] enemyList;
+    public GameObject[] enemyTypes;
+    public GameObject[] spawnDoors; //keeps track of all doors
+    public GameObject[] closestDoors = new GameObject[3];
 
     public int maxSpawns = 10;          //Enemies spawned at once
     public int maxEnemyPerWave = 10;    //Total enemies that spawn per wave
@@ -38,6 +49,9 @@ public class EnemySpawner : MonoBehaviour
     public float minRadius = 10;
 
     [Header("Do not adjust.")]
+    private float oldDist = 9999;       //For comparing closest doors
+    private float maxSDelay = 120;
+    private float searchDelay = 0;      //For stopping the closest door search every frame
     public int aliveEnemies = 0;        //Goes up as enemies spawn
     public int killCount = 0;           //Goes up as enemies are killed
     public int waveKillCount = 0;
@@ -54,6 +68,11 @@ public class EnemySpawner : MonoBehaviour
 
     void Start()
     {
+        spawnDoors = GameObject.FindGameObjectsWithTag("SpawnDoor");
+        closestDoors[0] = spawnDoors[0];
+        closestDoors[1] = spawnDoors[1];
+        closestDoors[2] = spawnDoors[2];
+
         currentState = SpawnerState.PRE_WAVE;
         lastState = currentState;
 
@@ -99,6 +118,28 @@ public class EnemySpawner : MonoBehaviour
             }
             case SpawnerState.WAVE:
             {
+                if((spawnType == SpawnType.DOORS_CLOSEST) && (searchDelay <= 0))
+                {
+                    Debug.Log("Start search");
+                    int o = 0;
+                    //Find closest doors to player
+                    for(int i = 0; i < spawnDoors.Length; i++)
+                    {
+                        float dist = (playerTransform.position - spawnDoors[i].transform.position).sqrMagnitude;
+
+                        if(dist <= oldDist)
+                        {
+                            closestDoors[o] = spawnDoors[i];
+                            oldDist = dist;
+                            o++;
+                        }
+                    }
+
+                    searchDelay = maxSDelay;
+                }
+
+                searchDelay -= Time.deltaTime;
+
                 //Spawn enemies
                 timerText.gameObject.SetActive(false);
                 waveText.gameObject.SetActive(false);
@@ -136,8 +177,13 @@ public class EnemySpawner : MonoBehaviour
             {
                 if (spawnRem >= spawnTime)
                 {
-                    SpawnInRadius();
-                    totalEnemiesSpawned++;
+                    switch(spawnType)
+                    {
+                        case SpawnType.RADIUS: SpawnInRadius(); break;
+                        case SpawnType.DOORS_RANDOM: SpawnByDoorsRandom(); break;
+                        case SpawnType.DOORS_CLOSEST: SpawnByDoorsClosest(); break;
+                        default: spawnType = SpawnType.RADIUS; break;
+                    }
                 }
                 else
                 {
@@ -150,12 +196,111 @@ public class EnemySpawner : MonoBehaviour
                 wave += 1;
                 ChangeState(SpawnerState.END_WAVE);
             }
+
+            //Every 1 sec find the closest doors
+
         }
     }
     public void ChangeState(SpawnerState newState)
     {
         lastState = currentState;
         currentState = newState;
+    }
+
+    public void SpawnByDoorsRandom()
+    {
+        //Temporary point to spawn at
+        Vector3 point = Vector3.zero;
+
+        //Get door position
+        int element = Random.Range(0,spawnDoors.Length-1);
+        Debug.Log(element);
+        point = spawnDoors[element].transform.position + (spawnDoors[element].transform.forward * 0.5f);
+        point.y = 0;
+
+        //Choose what type of enemy spawns next
+        int rand = Random.Range(1, 100);
+
+        if(rand >= 70) enemy = enemyTypes[1];
+        else enemy = enemyTypes[0];
+
+        //Spawn enemy and adjust vars
+        justSpawned = Instantiate(enemy, point, Quaternion.identity);
+        SetStats(justSpawned);
+        HasSpawned();
+    }
+
+    public void SpawnByDoorsClosest()   //is same as doors random atm
+    {
+        //Temporary point to spawn at
+        Vector3 point = Vector3.zero;
+
+        if(closestDoors.Length != 0)
+        {
+            int element = Random.Range(0, closestDoors.Length);
+            point = closestDoors[element].transform.position + (closestDoors[element].transform.forward * 0.5f);
+            point.y = 0;
+
+            //Choose what type of enemy spawns next
+            int rand = Random.Range(1, 100);
+            if(rand >= 70) enemy = enemyTypes[1];
+            else enemy = enemyTypes[0];
+
+            //Spawn enemy and adjust vars
+            justSpawned = Instantiate(enemy, point, Quaternion.identity);
+            SetStats(justSpawned);
+            HasSpawned();
+
+            /*for(int i = 0; i < closestDoors.Length; i++)
+            {
+                //Get door position
+                point = closestDoors[i].transform.position + (closestDoors[i].transform.forward * 0.5f);
+                point.y = 0;
+
+                //Choose what type of enemy spawns next
+                int rand = Random.Range(1, 100);
+                if(rand >= 70) enemy = enemyTypes[1];
+                else enemy = enemyTypes[0];
+
+                //Spawn enemy and adjust vars
+                justSpawned = Instantiate(enemy, point, Quaternion.identity);
+                SetStats(justSpawned);
+                HasSpawned();
+            }*/
+        }
+        else Debug.Log("closest doors array is empty");
+        /*//Temporary point to spawn at
+        Vector3 point = Vector3.zero;
+        float doorDist = 50;
+        float lastDist = doorDist;
+
+        for(int cd = 0; cd < closestDoors.Length; cd++)
+        {
+            for(int sd = 0; sd < spawnDoors.Length - 1; sd++)
+            {
+                doorDist = Vector3.Distance(playerTransform.position, spawnDoors[sd].transform.position);
+                if(doorDist < lastDist)
+                {
+                    closestDoors[cd] = spawnDoors[sd];
+                }
+                //float dist = Vector3.Distance(playerTransform.position, spawnDoors[0].transform.position) | Vector3.Distance(playerTransform.position, spawnDoors[1].transform.position);
+            }
+        }
+        //Get door position
+        int element = Random.Range(0, spawnDoors.Length - 1);
+        //Debug.Log(element);
+        point = spawnDoors[element].transform.position + (spawnDoors[element].transform.forward * 0.5f);
+        point.y = 0;
+
+        //Choose what type of enemy spawns next
+        int rand = Random.Range(1, 100);
+
+        if(rand >= 70) enemy = enemyTypes[1];
+        else enemy = enemyTypes[0];
+
+        //Spawn enemy and adjust vars
+        justSpawned = Instantiate(enemy, point, Quaternion.identity);
+        SetStats(justSpawned);*/
     }
 
     public void SpawnInRadius()
@@ -236,14 +381,12 @@ public class EnemySpawner : MonoBehaviour
         //Choose what type of enemy spawns next
         int rand = Random.Range(1, 100);
 
-        if(rand >= 70) enemy = enemyList[1];
-        else enemy = enemyList[0];
+        if(rand >= 70) enemy = enemyTypes[1];
+        else enemy = enemyTypes[0];
 
         justSpawned = Instantiate(enemy, randomPos, Quaternion.identity);
         SetStats(justSpawned);
-
-        aliveEnemies += 1;
-        spawnRem = 0;
+        HasSpawned();
     }//END SpawnInRadius
 
     private void OnDrawGizmos() //To display the radius the enemy/target would spawn in
@@ -276,6 +419,13 @@ public class EnemySpawner : MonoBehaviour
         //Every 10 kills reduce the spawn timer
         if((killCount % 10) == 0) spawnTime = spawnTime - timeReducePerSet;
     }//END EnemuKilled
+
+    private void HasSpawned()
+    {
+        aliveEnemies += 1;
+        spawnRem = 0;
+        totalEnemiesSpawned++;
+    }
 
     public void SetStats(GameObject enemy)
     {

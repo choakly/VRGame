@@ -44,18 +44,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b26841a442ca44141a03d6bae6e3aef2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyList:
+  currentState: 0
+  spawnType: 2
+  enemyTypes:
   - {fileID: 4451910049165779210, guid: 18c02e3ef77e9ae46b82ed0db688f528, type: 3}
   - {fileID: 2810057810072291451, guid: eb37a1b8d4f470f4184cfe7fddb4a145, type: 3}
-  - {fileID: 5800811084249616717, guid: 83fd963c760825e4395bfe36b4adf4e3, type: 3}
+  spawnDoors: []
+  closestDoors: []
   maxSpawns: 10
+  maxEnemyPerWave: 10
+  totalEnemiesSpawned: 0
+  wave: 1
   spawnTime: 5
   timeReducePerSet: 0.5
   minDistForEnemies: 4
+  preWaveTimer: 30
+  timerIsRunning: 0
+  timerText: {fileID: 0}
+  waveText: {fileID: 0}
   maxRadius: 20
   minRadius: 10
   aliveEnemies: 0
   killCount: 0
+  waveKillCount: 0
   totalEnemies: []
   spawnRem: 0
   canSpawn: 1
@@ -63,3 +74,4 @@ MonoBehaviour:
   playerTransform: {fileID: 0}
   menuScript: {fileID: 0}
   scoreHandler: {fileID: 0}
+  upgrades: {fileID: 0}
