@@ -2,16 +2,22 @@ using UnityEngine;
 
 public class SpawnDoor : MonoBehaviour
 {
-    public bool active;
+    [Header("Enemy spawns in front of this object.")]
+    [Header("The blue arrow is forward.")]
+    public bool active = false;
 
-    void Start()
+    /*
+    * For stopping repeated spawns at the same door
+    */
+    public void JustSpawned(bool state, float time)
     {
-        active = false;
-        active = true;
+        active = state;
+
+        Invoke("ResetActive", time * 0.75f);
     }
 
-    void Update()
+    private void ResetActive()
     {
-        
+        active = false;
     }
 }

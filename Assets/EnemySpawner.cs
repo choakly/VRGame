@@ -1,7 +1,8 @@
 using TMPro;
 using UnityEngine;
-using UnityEngine.UIElements;
+using Random = UnityEngine.Random;
 using Color = UnityEngine.Color;
+using System.Collections;
 
 public enum SpawnerState
 {
@@ -14,7 +15,7 @@ public enum SpawnType
 {
     RADIUS,
     DOORS_RANDOM,
-    DOORS_CLOSEST
+    SPAWN_BOXES
 }
 
 public class EnemySpawner : MonoBehaviour
@@ -28,9 +29,16 @@ public class EnemySpawner : MonoBehaviour
     [Header("Initial Enemy Spawn Variables")]
     private GameObject enemy;
     //private int totalTypes = 3;
-    public GameObject[] enemyTypes;
-    public GameObject[] spawnDoors; //keeps track of all doors
-    public GameObject[] closestDoors = new GameObject[3];
+    [SerializeField] GameObject[] enemyTypes;
+
+    [Header("Spawn boxes contain their own doors.\nThe first box is active.")]
+    [SerializeField] GameObject[] spawnBoxes; //Areas that contain the door that spawn enemies
+    [SerializeField] Transform[] doorsPos;   //the doors contain within the spawn box
+    [SerializeField] GameObject activeSpawnBox = null;   //the active spawn box/area
+    private Coroutine boxRoutine;   //contains coroutine for changing the spawn box/area
+
+    [Header("SpawnDoors are not related to the spawn boxes\nbut for the Doors_Random spawn type.")]
+    [SerializeField] GameObject[] spawnDoors; //keeps track of all doors for spawning doors random(not related to the spawn boxes)
 
     public int maxSpawns = 10;          //Enemies spawned at once
     public int maxEnemyPerWave = 10;    //Total enemies that spawn per wave
@@ -49,9 +57,7 @@ public class EnemySpawner : MonoBehaviour
     public float minRadius = 10;
 
     [Header("Do not adjust.")]
-    private float oldDist = 9999;       //For comparing closest doors
-    private float maxSDelay = 120;
-    private float searchDelay = 0;      //For stopping the closest door search every frame
+    private bool setBoxDelay = false;      //For delaying changing the box switch until an enemy is not actively spawning
     public int aliveEnemies = 0;        //Goes up as enemies spawn
     public int killCount = 0;           //Goes up as enemies are killed
     public int waveKillCount = 0;
@@ -68,10 +74,25 @@ public class EnemySpawner : MonoBehaviour
 
     void Start()
     {
-        spawnDoors = GameObject.FindGameObjectsWithTag("SpawnDoor");
-        closestDoors[0] = spawnDoors[0];
-        closestDoors[1] = spawnDoors[1];
-        closestDoors[2] = spawnDoors[2];
+        switch (spawnType)
+        {
+            case SpawnType.DOORS_RANDOM:
+            {
+                spawnDoors = GameObject.FindGameObjectsWithTag("SpawnDoor");
+                break;
+            }
+            case SpawnType.SPAWN_BOXES:
+            {
+            
+                spawnBoxes = GameObject.FindGameObjectsWithTag("SpawnBox");
+
+                if(spawnBoxes != null)
+                {
+                    ChangeActiveBox(spawnBoxes[0]);
+                }
+                break;
+            }
+        }
 
         currentState = SpawnerState.PRE_WAVE;
         lastState = currentState;
@@ -79,26 +100,32 @@ public class EnemySpawner : MonoBehaviour
         aliveEnemies = 0;
         wave = 1;
 
-        GameObject cam = GameObject.FindGameObjectWithTag("MainCamera");
+        GameObject cam = GameObject.FindGameObjectWithTag("Player");
         playerTransform = cam.transform;
 
-        GameObject gameMenu = GameObject.FindGameObjectWithTag("Menu");
-        menuScript = gameMenu.GetComponent<GameMenuManager>();
+        /*GameObject gameMenu*/ menuScript = GameObject.FindAnyObjectByType<GameMenuManager>(); //FindGameObjectWithTag("Menu");
+        //menuScript = gameMenu.GetComponent<GameMenuManager>();
 
-        GameObject score = GameObject.FindGameObjectWithTag("HighscoreObj");
-        scoreHandler = score.GetComponent<HighScoreHandler>();
+        /*GameObject score*/ //scoreHandler = GameObject.FindAnyObjectByType<HighScoreHandler>(); //FindGameObjectWithTag("HighscoreObj");
+        //scoreHandler = score.GetComponent<HighScoreHandler>();
 
-        scoreHandler.Invoke("RemoveTempScore",0.5f);
+        if(scoreHandler != null)
+        {
+            scoreHandler.Invoke("RemoveTempScore", 0.1f);
+        }
+        else
+        {
+            Debug.LogWarning("HighScoreHandler not found");
+        }
     }
 
     private void Update()
     {
-        //if(!menuScript.gamePaused)
-        //{
         switch(currentState)
         {
             case SpawnerState.PRE_WAVE:
             {
+                ResetVars();
                 timerText.gameObject.SetActive(true);
                 waveText.gameObject.SetActive(true);
 
@@ -118,28 +145,6 @@ public class EnemySpawner : MonoBehaviour
             }
             case SpawnerState.WAVE:
             {
-                if((spawnType == SpawnType.DOORS_CLOSEST) && (searchDelay <= 0))
-                {
-                    Debug.Log("Start search");
-                    int o = 0;
-                    //Find closest doors to player
-                    for(int i = 0; i < spawnDoors.Length; i++)
-                    {
-                        float dist = (playerTransform.position - spawnDoors[i].transform.position).sqrMagnitude;
-
-                        if(dist <= oldDist)
-                        {
-                            closestDoors[o] = spawnDoors[i];
-                            oldDist = dist;
-                            o++;
-                        }
-                    }
-
-                    searchDelay = maxSDelay;
-                }
-
-                searchDelay -= Time.deltaTime;
-
                 //Spawn enemies
                 timerText.gameObject.SetActive(false);
                 waveText.gameObject.SetActive(false);
@@ -150,12 +155,10 @@ public class EnemySpawner : MonoBehaviour
             {
                 //Upgrades
                 upgrades.UpgradeMenu();
-
                 Debug.Log("END_WAVE State: Activated");
                 break;
             }
-        } 
-        //}
+        }
     }
 
     void DisplayTime(float timeToDisplay)
@@ -169,11 +172,11 @@ public class EnemySpawner : MonoBehaviour
 
     public void WaveIsCurrent()
     {
-        if (!menuScript.gamePaused)
+        if(!menuScript.gamePaused)
         {
             //Get a list of all enemies(gameobject)
             totalEnemies = GameObject.FindGameObjectsWithTag("Enemy");
-            if ((aliveEnemies < maxSpawns) && (totalEnemies.Length < maxSpawns) && (totalEnemiesSpawned <= maxEnemyPerWave) && (waveKillCount != maxEnemyPerWave))
+            if ((aliveEnemies < maxSpawns) && (totalEnemies.Length < maxSpawns) && (totalEnemiesSpawned < maxEnemyPerWave) && (waveKillCount != maxEnemyPerWave))
             {
                 if (spawnRem >= spawnTime)
                 {
@@ -181,13 +184,13 @@ public class EnemySpawner : MonoBehaviour
                     {
                         case SpawnType.RADIUS: SpawnInRadius(); break;
                         case SpawnType.DOORS_RANDOM: SpawnByDoorsRandom(); break;
-                        case SpawnType.DOORS_CLOSEST: SpawnByDoorsClosest(); break;
+                        case SpawnType.SPAWN_BOXES: SpawnByBox(); break;
                         default: spawnType = SpawnType.RADIUS; break;
                     }
                 }
                 else
                 {
-                    spawnRem += 1 * Time.deltaTime;
+                    spawnRem += Time.deltaTime;
                 }
             }
             if (waveKillCount >= maxEnemyPerWave)
@@ -213,7 +216,7 @@ public class EnemySpawner : MonoBehaviour
         Vector3 point = Vector3.zero;
 
         //Get door position
-        int element = Random.Range(0,spawnDoors.Length-1);
+        int element = Random.Range(0,spawnDoors.Length);
         Debug.Log(element);
         point = spawnDoors[element].transform.position + (spawnDoors[element].transform.forward * 0.5f);
         point.y = 0;
@@ -230,67 +233,29 @@ public class EnemySpawner : MonoBehaviour
         HasSpawned();
     }
 
-    public void SpawnByDoorsClosest()   //is same as doors random atm
+    public void SpawnByBox()
     {
+        if(activeSpawnBox == null)
+        {
+            ChangeActiveBox(spawnBoxes[0]);
+        }
+
+        setBoxDelay = true; //if true then changing the boxes should be stopped to prioritize the enemy spawn
+
         //Temporary point to spawn at
-        Vector3 point = Vector3.zero;
+        Vector3 point;
 
-        if(closestDoors.Length != 0)
-        {
-            int element = Random.Range(0, closestDoors.Length);
-            point = closestDoors[element].transform.position + (closestDoors[element].transform.forward * 0.5f);
-            point.y = 0;
-
-            //Choose what type of enemy spawns next
-            int rand = Random.Range(1, 100);
-            if(rand >= 70) enemy = enemyTypes[1];
-            else enemy = enemyTypes[0];
-
-            //Spawn enemy and adjust vars
-            justSpawned = Instantiate(enemy, point, Quaternion.identity);
-            SetStats(justSpawned);
-            HasSpawned();
-
-            /*for(int i = 0; i < closestDoors.Length; i++)
-            {
-                //Get door position
-                point = closestDoors[i].transform.position + (closestDoors[i].transform.forward * 0.5f);
-                point.y = 0;
-
-                //Choose what type of enemy spawns next
-                int rand = Random.Range(1, 100);
-                if(rand >= 70) enemy = enemyTypes[1];
-                else enemy = enemyTypes[0];
-
-                //Spawn enemy and adjust vars
-                justSpawned = Instantiate(enemy, point, Quaternion.identity);
-                SetStats(justSpawned);
-                HasSpawned();
-            }*/
-        }
-        else Debug.Log("closest doors array is empty");
-        /*//Temporary point to spawn at
-        Vector3 point = Vector3.zero;
-        float doorDist = 50;
-        float lastDist = doorDist;
-
-        for(int cd = 0; cd < closestDoors.Length; cd++)
-        {
-            for(int sd = 0; sd < spawnDoors.Length - 1; sd++)
-            {
-                doorDist = Vector3.Distance(playerTransform.position, spawnDoors[sd].transform.position);
-                if(doorDist < lastDist)
-                {
-                    closestDoors[cd] = spawnDoors[sd];
-                }
-                //float dist = Vector3.Distance(playerTransform.position, spawnDoors[0].transform.position) | Vector3.Distance(playerTransform.position, spawnDoors[1].transform.position);
-            }
-        }
         //Get door position
-        int element = Random.Range(0, spawnDoors.Length - 1);
-        //Debug.Log(element);
-        point = spawnDoors[element].transform.position + (spawnDoors[element].transform.forward * 0.5f);
-        point.y = 0;
+        int element = Random.Range(0,doorsPos.Length);
+
+        //Dont spawn enemy at a different door each run
+        /*if(doorsPos[element].GetComponent<SpawnDoor>().active)
+        {
+            element = Random.Range(0, doorsPos.Length - 1);
+        }*/
+
+        point = doorsPos[element].position + (doorsPos[element].forward * 0.5f);
+        //point.y = 0;
 
         //Choose what type of enemy spawns next
         int rand = Random.Range(1, 100);
@@ -300,7 +265,54 @@ public class EnemySpawner : MonoBehaviour
 
         //Spawn enemy and adjust vars
         justSpawned = Instantiate(enemy, point, Quaternion.identity);
-        SetStats(justSpawned);*/
+        SetStats(justSpawned);
+        HasSpawned();
+
+        //doorsPos[element].GetComponent<SpawnDoor>().JustSpawned(true, spawnTime);
+        
+    }
+
+    private IEnumerator ChangeBoxRoutine(GameObject newBox)
+    {
+        if(!setBoxDelay)
+        {
+            Debug.LogWarning("box coroutine has run");
+            ChangeActiveBox(newBox);
+        }
+        else
+        {
+            yield return new WaitForSeconds(0.1f);
+        }
+    }
+
+    public void ChangeActiveBox(GameObject newBox)
+    {
+        if(!setBoxDelay)
+        {
+            if(newBox != null)
+            {
+                activeSpawnBox = newBox;
+                SpawnBox temp = activeSpawnBox.GetComponent<SpawnBox>();
+
+                doorsPos = temp.GetSpawnDoors();
+
+                if(doorsPos.Length < 1)
+                {
+                    Debug.LogWarning("Add more doors to the current box: " + activeSpawnBox.name);
+                }
+            }
+
+            if(boxRoutine != null)
+            {
+                StopCoroutine(boxRoutine);
+                Debug.LogWarning("box coroutine has stopped");
+                boxRoutine = null;
+            }
+        }
+        else if(boxRoutine == null)
+        {
+            boxRoutine = StartCoroutine(ChangeBoxRoutine(newBox));
+        }
     }
 
     public void SpawnInRadius()
@@ -326,8 +338,6 @@ public class EnemySpawner : MonoBehaviour
 
                 if(distToE <= minDistForEnemies)
                 {
-                    //Debug.Log("Enemy too close");
-                    //Debug.Log("dist to e: " + distToE);
                     canSpawn = false;
                     break;
                 }
@@ -338,7 +348,6 @@ public class EnemySpawner : MonoBehaviour
         {
             //Generate random position
             randomPos = Random.insideUnitSphere * maxRadius;
-            //Debug.Log("New spawn position");
 
             //Height Adjustments
             randomPos.y = 0;
@@ -355,7 +364,6 @@ public class EnemySpawner : MonoBehaviour
                     if (distToE <= minDistForEnemies)
                     {
                         //Debug.Log("While. Enemy too close");
-                        //Debug.Log("While. dist to e: " + distToE);
                         break;
                     }
                 }
@@ -400,15 +408,8 @@ public class EnemySpawner : MonoBehaviour
         Gizmos.DrawWireSphere(this.transform.position, maxRadius);
     }
 
-    public void EnemyTooClose()
-    {
-        aliveEnemies -= 1;
-    }
-
     public void EnemyKilled()
     {
-        //Debug.Log("EnemyKilled has run");
-        //Debug.Log("before killed: " + aliveEnemies);
         aliveEnemies -= 1;
         killCount += 1;
         waveKillCount += 1;
@@ -417,7 +418,7 @@ public class EnemySpawner : MonoBehaviour
         //Debug.Log("after after: " + aliveEnemies);
 
         //Every 10 kills reduce the spawn timer
-        if((killCount % 10) == 0) spawnTime = spawnTime - timeReducePerSet;
+        if((killCount % 10) == 0) spawnTime = Mathf.Clamp(spawnTime - timeReducePerSet, 1, spawnTime);
     }//END EnemuKilled
 
     private void HasSpawned()
@@ -425,6 +426,7 @@ public class EnemySpawner : MonoBehaviour
         aliveEnemies += 1;
         spawnRem = 0;
         totalEnemiesSpawned++;
+        setBoxDelay = false;
     }
 
     public void SetStats(GameObject enemy)
@@ -433,8 +435,15 @@ public class EnemySpawner : MonoBehaviour
         EnemyHandler enemyHandler = enemy.GetComponent<EnemyHandler>();
         enemyHandler.target = playerTransform;
         enemyHandler.menu = menuScript;
+        enemyHandler.spawner = gameObject;
 
         //Set stats (variables)
         //damage, health, etc
+    }
+
+    private void ResetVars()
+    {
+        totalEnemiesSpawned = 0;
+        waveKillCount = 0;
     }
 }//END EnemySpawner

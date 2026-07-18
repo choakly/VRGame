@@ -1,6 +1,3 @@
-//using System;
-using System.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class EnemyHandler : MonoBehaviour
@@ -44,7 +41,7 @@ public class EnemyHandler : MonoBehaviour
         
 
         //Get spawner reference
-        spawner = GameObject.FindGameObjectWithTag("Spawner");
+        //spawner = GameObject.FindGameObjectWithTag("Spawner");
         if (spawner != null) script = spawner.GetComponent<EnemySpawner>();
         else Debug.Log("no spawner found");
     }
@@ -74,8 +71,6 @@ public class EnemyHandler : MonoBehaviour
                 fireRate += 1 * Time.deltaTime;
         }
     }
-
-    
 
     private void LookAtTarget()
     {

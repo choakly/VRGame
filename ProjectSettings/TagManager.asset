@@ -12,6 +12,7 @@ TagManager:
   - Menu
   - HighscoreObj
   - SpawnDoor
+  - SpawnBox
   layers:
   - Default
   - TransparentFX
